@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USS Surnia NX-2526 | Main Interface</title>
+    <style>
+        :root {
+            --lcars-orange: #FF4D4D;
+            --lcars-blue: #00A6FB;
+            --lcars-gray: #404552;
+            --lcars-dark-gray: #2A2C33;
+            --background: #000000;
+            --text: #ffffff;
+            --panel-bg: #1A1A1A;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+            cursor: default;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+            overflow: hidden;
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+        }
+
+        .lcars-container {
+            display: grid;
+            grid-template-columns: 300px 1fr 100px;
+            height: 100vh;
+            gap: 2px;
+            padding: 20px;
+            background: var(--background);
+        }
+
+        /* Left Panel */
+        .left-panel {
+            background: var(--panel-bg);
+            border-radius: 15px 0 0 15px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .system-status {
+            color: var(--lcars-orange);
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .status-bars {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .status-bar {
+            height: 15px;
+            background: var(--lcars-dark-gray);
+            position: relative;
+        }
+
+        .status-bar-fill {
+            height: 100%;
+            background: var(--lcars-blue);
+            animation: pulse 2s infinite;
+        }
+
+        .status-labels {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .status-label {
+            background: var(--lcars-gray);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        /* Circular Displays */
+        .circular-display {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 2px solid var(--lcars-blue);
+            position: relative;
+            margin: 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .circular-inner {
+            width: 80%;
+            height: 80%;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--lcars-blue) 0%, transparent 70%);
+            animation: rotate 4s linear infinite;
+        }
+
+        /* Main Content */
+        .main-content {
+            background: var(--panel-bg);
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .grid-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(var(--lcars-dark-gray) 1px, transparent 1px),
+                linear-gradient(90deg, var(--lcars-dark-gray) 1px, transparent 1px);
+            background-size: 50px 50px;
+            opacity: 0.1;
+        }
+
+        /* Right Panel */
+        .right-panel {
+            background: var(--panel-bg);
+            border-radius: 0 15px 15px 0;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .control-button {
+            background: var(--lcars-gray);
+            height: 30px;
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .scan-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: rgba(0, 166, 251, 0.2);
+            animation: scan 2s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+
+        /* Top Status Bar */
+        .top-bar {
+            height: 30px;
+            background: var(--panel-bg);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            color: var(--lcars-blue);
+            font-size: 12px;
+        }
+
+        /* Bottom Status Display */
+        .bottom-display {
+            height: 100px;
+            background: var(--panel-bg);
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .bottom-circular {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 2px solid var(--lcars-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .coordinates {
+            color: var(--lcars-orange);
+            font-family: monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <span>STARDATE: 47634.44</span>
+        <span>USS SURNIA NX-2526</span>
+        <span>SYSTEM READY</span>
+    </div>
+
+    <div class="lcars-container">
+        <div class="left-panel">
+            <div class="system-status">SYSTEM READY</div>
+            
+            <div class="status-labels">
+                <div class="status-label">D-5558</div>
+                <div class="status-label">P-6753</div>
+                <div class="status-label">V-3924</div>
+                <div class="status-label">B-9858</div>
+            </div>
+
+            <div class="status-bars">
+                <div class="status-bar"><div class="status-bar-fill" style="width: 75%"></div></div>
+                <div class="status-bar"><div class="status-bar-fill" style="width: 90%"></div></div>
+                <div class="status-bar"><div class="status-bar-fill" style="width: 60%"></div></div>
+                <div class="status-bar"><div class="status-bar-fill" style="width: 85%"></div></div>
+            </div>
+
+            <div class="circular-display">
+                <div class="circular-inner"></div>
+            </div>
+
+            <div class="circular-display">
+                <div class="circular-inner"></div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="grid-overlay"></div>
+            <div class="scan-line"></div>
+        </div>
+
+        <div class="right-panel">
+            <div class="control-button"></div>
+            <div class="control-button"></div>
+            <div class="control-button"></div>
+            <div class="control-button"></div>
+            <div class="control-button"></div>
+            <div class="control-button"></div>
+            <div class="control-button"></div>
+            <div class="control-button"></div>
+        </div>
+    </div>
+
+    <div class="bottom-display">
+        <div class="bottom-circular">
+            <div class="circular-inner"></div>
+        </div>
+        <div class="coordinates">
+            SOURCE [041.37.6] ◊ HC-59 358.29<br>
+            [014.39.6] V TP-14 159.46
+        </div>
+    </div>
+
+    <script>
+        // Simulate system updates
+        setInterval(() => {
+            const bars = document.querySelectorAll('.status-bar-fill');
+            bars.forEach(bar => {
+                const newWidth = Math.random() * 30 + 60; // Random between 60-90%
+                bar.style.width = `${newWidth}%`;
+            });
+        }, 2000);
+
+        // Add ambient sound on interaction
+        document.addEventListener('click', () => {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(1500, audioContext.currentTime);
+            gainNode.gain.setValueAtTime(0.05, audioContext.currentTime);
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.start();
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+            
+            setTimeout(() => oscillator.stop(), 100);
+        });
+
+        // Update stardate
+        setInterval(() => {
+            const stardate = document.querySelector('.top-bar span:first-child');
+            const current = parseFloat(stardate.textContent.split(': ')[1]);
+            stardate.textContent = `STARDATE: ${(current + 0.01).toFixed(2)}`;
+        }, 10000);
+    </script>
+</body>
+</html>
