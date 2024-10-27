@@ -9,8 +9,6 @@
     <style>
         :root {
             --primary-color: #aa4b46;
-            --primary-blue: #00A6FB;
-            --glow-blue: rgba(0, 166, 251, 0.3);
             --background: #000819;
             --text: #E1E1E1;
         }
@@ -41,7 +39,7 @@
         }
 
         .logo-container {
-            margin-bottom: 40px;
+            margin-bottom: 20px;
             position: relative;
         }
 
@@ -52,21 +50,20 @@
             filter: drop-shadow(0 0 10px var(--primary-color));
         }
 
-        .glitch-effect {
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 300px;
-            height: 100%;
-            animation: glitchEffect 0.5s infinite;
-            opacity: 0;
+        .accessing-text {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--primary-color);
+            font-size: 1.2em;
+            margin-top: 10px;
+            opacity: 0.8;
+            text-shadow: 0 0 5px var(--primary-color);
         }
 
         .progress-container {
             width: 80%;
             margin: 40px auto;
             position: relative;
+            transition: opacity 0.3s ease;
         }
 
         .progress-bar {
@@ -115,55 +112,31 @@
             transform: translateY(0);
         }
 
-        .access-granted {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: var(--background);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        .access-granted-text {
             font-family: 'Orbitron', sans-serif;
-            font-size: 3em;
+            font-size: 1.5em;
             color: var(--primary-color);
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.5s ease;
+            animation: flashingText 0.2s infinite;
+            display: none;
         }
 
-        .access-granted.visible {
-            opacity: 1;
+        @keyframes flashingText {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
         }
 
         @keyframes logoFlash {
             0%, 100% { 
                 opacity: 1;
-                filter: drop-shadow(0 0 10px var(--primary-blue));
+                filter: drop-shadow(0 0 10px var(--primary-color));
             }
             50% { 
                 opacity: 0.6;
-                filter: drop-shadow(0 0 5px var(--primary-blue));
+                filter: drop-shadow(0 0 5px var(--primary-color));
             }
             75% {
                 opacity: 0.8;
-                filter: drop-shadow(0 0 15px var(--primary-blue));
-            }
-        }
-
-        @keyframes glitchEffect {
-            0% { 
-                opacity: 0;
-                transform: translateX(-50%) scale(1.02);
-            }
-            50% { 
-                opacity: 0.1;
-                transform: translateX(-49%) scale(0.98);
-            }
-            100% { 
-                opacity: 0;
-                transform: translateX(-50%) scale(1);
+                filter: drop-shadow(0 0 15px var(--primary-color));
             }
         }
 
@@ -185,20 +158,13 @@
             0% { top: 0; }
             100% { top: 100%; }
         }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
-        }
     </style>
 </head>
 <body>
     <div class="initialization-container">
         <div class="logo-container">
             <img src="images/surnialogo.png" alt="SURNIA Logo" class="surnia-logo">
-            <div class="glitch-effect">
-                <img src="/images/surnialogo.png" alt="">
-            </div>
+            <div class="accessing-text">Accessing S.U.R.N.I.A.</div>
         </div>
 
         <div class="progress-container">
@@ -213,16 +179,17 @@
                 <div class="console-line"></div>
                 <div class="console-line"></div>
             </div>
+            <div class="access-granted-text">ACCESS GRANTED</div>
         </div>
     </div>
-
-    <div class="access-granted">ACCESS GRANTED</div>
 
     <script>
         class ConsoleSimulator {
             constructor() {
                 this.consoleElement = document.querySelector('.console-text');
                 this.progressBar = document.querySelector('.progress-fill');
+                this.progressContainer = document.querySelector('.progress-container');
+                this.accessGrantedText = document.querySelector('.access-granted-text');
                 this.progress = 0;
                 this.currentLine = 0;
                 this.isTyping = false;
@@ -287,8 +254,10 @@
             }
 
             showAccessGranted() {
-                const accessGranted = document.querySelector('.access-granted');
-                accessGranted.classList.add('visible');
+                this.progressContainer.style.opacity = '0';
+                this.consoleElement.style.display = 'none';
+                this.accessGrantedText.style.display = 'block';
+                
                 setTimeout(() => {
                     window.location.href = 'main.html';
                 }, 1500);
