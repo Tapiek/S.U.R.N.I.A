@@ -3,13 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>USS Surnia NX-2526 | Star Trek Roleplay</title>
+    <title>USS Surnia NX-2526 | LCARS Interface</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
+
         :root {
-            --primary: #0066cc;
-            --secondary: #00a8ff;
-            --accent: #ff9900;
+            --lcars-orange: #ff9c00;
+            --lcars-purple: #cc99cc;
+            --lcars-pink: #ff99cc;
+            --lcars-blue: #9999ff;
+            --lcars-lightblue: #99ccff;
+            --lcars-tan: #ff9966;
+            --lcars-brown: #cc6666;
             --background: #000819;
             --text: #ffffff;
         }
@@ -18,294 +24,303 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Arial', sans-serif;
+            font-family: 'Quicksand', sans-serif;
+            cursor: default;
         }
 
         body {
             background-color: var(--background);
             color: var(--text);
-            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        /* Header Styles */
-        .header {
-            background: linear-gradient(180deg, rgba(0,0,0,0.9) 0%, rgba(0,8,25,0.9) 100%);
-            padding: 1rem;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0, 168, 255, 0.2);
+        /* LCARS Header */
+        .lcars-header {
+            height: 120px;
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 20px;
+            padding: 20px;
+            background: linear-gradient(90deg, var(--background) 0%, rgba(0,8,25,0.9) 100%);
         }
 
-        .nav {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            color: var(--secondary);
-            text-decoration: none;
+        .lcars-pill {
+            background: var(--lcars-orange);
+            border-radius: 999px;
             display: flex;
             align-items: center;
-            gap: 1rem;
+            padding: 0 20px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
         }
 
-        .logo img {
-            height: 50px;
+        .lcars-pill:hover {
+            filter: brightness(1.2);
+            transform: scale(1.02);
         }
 
-        .nav-links {
+        .lcars-header-right {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+        }
+
+        /* Main Content */
+        .lcars-main {
+            display: grid;
+            grid-template-columns: 200px 1fr 200px;
+            gap: 20px;
+            padding: 20px;
+            min-height: calc(100vh - 120px);
+        }
+
+        .lcars-sidebar {
             display: flex;
-            gap: 2rem;
+            flex-direction: column;
+            gap: 20px;
         }
 
-        .nav-links a {
-            color: var(--text);
-            text-decoration: none;
-            transition: color 0.3s;
-            font-weight: 500;
-        }
-
-        .nav-links a:hover {
-            color: var(--secondary);
-        }
-
-        /* Hero Section */
-        .hero {
-            height: 100vh;
+        .lcars-button {
+            height: 60px;
+            background: var(--lcars-purple);
+            border-radius: 16px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            text-align: center;
-            background: url('/api/placeholder/1920/1080') center/cover no-repeat;
+            padding: 0 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .lcars-button:hover {
+            filter: brightness(1.2);
+            transform: translateX(5px);
+        }
+
+        .lcars-content {
+            background: rgba(153, 204, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px;
             position: relative;
-            padding: 2rem;
+            overflow: hidden;
         }
 
-        .hero::before {
+        .lcars-content::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.7);
+            height: 5px;
+            background: linear-gradient(90deg, var(--lcars-blue), var(--lcars-lightblue));
+            box-shadow: 0 0 20px rgba(153, 204, 255, 0.5);
         }
 
-        .hero-content {
-            position: relative;
-            z-index: 1;
-            max-width: 800px;
+        .lcars-panel {
+            height: 150px;
+            background: var(--lcars-tan);
+            border-radius: 16px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
         }
 
-        .hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-            color: var(--secondary);
+        .lcars-panel:hover {
+            transform: scale(1.02);
+            filter: brightness(1.1);
         }
 
-        .hero p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-        }
-
-        /* Sections */
-        .section {
-            padding: 5rem 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .section h2 {
-            color: var(--secondary);
-            margin-bottom: 2rem;
-            text-align: center;
-        }
-
-        /* Cards */
-        .cards {
+        /* Interactive Elements */
+        .lcars-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            padding: 2rem 0;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
         }
 
-        .card {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            padding: 2rem;
-            transition: transform 0.3s;
-            border: 1px solid rgba(0, 168, 255, 0.2);
+        .lcars-card {
+            background: rgba(153, 204, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
         }
 
-        .card:hover {
+        .lcars-card:hover {
+            border-color: var(--lcars-lightblue);
             transform: translateY(-5px);
         }
 
-        .card h3 {
-            color: var(--accent);
+        .lcars-title {
+            color: var(--lcars-orange);
+            font-size: 2rem;
             margin-bottom: 1rem;
+            font-weight: 300;
         }
 
-        /* Button */
-        .btn {
-            display: inline-block;
-            padding: 0.8rem 2rem;
-            background-color: var(--secondary);
+        .lcars-text {
             color: var(--text);
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-
-        .btn:hover {
-            background-color: var(--primary);
-        }
-
-        /* Footer */
-        .footer {
-            background: linear-gradient(0deg, rgba(0,0,0,0.9) 0%, rgba(0,8,25,0.9) 100%);
-            padding: 2rem;
-            text-align: center;
-            margin-top: 4rem;
-        }
-
-        .social-links {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
+            line-height: 1.6;
             margin-bottom: 1rem;
-        }
-
-        .social-links a {
-            color: var(--text);
-            font-size: 1.5rem;
-            transition: color 0.3s;
-        }
-
-        .social-links a:hover {
-            color: var(--secondary);
         }
 
         /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
         }
 
-        .fade-in {
-            animation: fadeIn 1s ease-out;
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes scan {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+
+        .lcars-content::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--lcars-lightblue);
+            opacity: 0.5;
+            animation: scan 3s linear infinite;
+        }
+
+        /* Status Indicators */
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--lcars-orange);
+            margin-right: 10px;
+            display: inline-block;
+        }
+
+        .status-online {
+            background: #00ff00;
         }
 
         /* Responsive Design */
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none;
+        @media (max-width: 1024px) {
+            .lcars-main {
+                grid-template-columns: 1fr;
             }
 
-            .hero h1 {
-                font-size: 2.5rem;
+            .lcars-header {
+                height: auto;
+                grid-template-columns: 1fr;
             }
 
-            .section {
-                padding: 3rem 1rem;
+            .lcars-sidebar {
+                flex-direction: row;
+                overflow-x: auto;
+                padding-bottom: 10px;
+            }
+
+            .lcars-button {
+                min-width: 150px;
             }
         }
     </style>
 </head>
 <body>
-    <header class="header">
-        <nav class="nav">
-            <a href="#" class="logo">
-                <img src="/api/placeholder/50/50" alt="USS Surnia Logo">
-                USS Surnia NX-2526
-            </a>
-            <div class="nav-links">
-                <a href="#about">About</a>
-                <a href="#crew">Join the Crew</a>
-                <a href="#missions">Missions</a>
-                <a href="#contact">Contact</a>
+    <header class="lcars-header">
+        <div class="lcars-pill">USS SURNIA</div>
+        <div class="lcars-header-right">
+            <div class="lcars-pill" style="background: var(--lcars-purple)">NX-2526</div>
+            <div class="lcars-pill" style="background: var(--lcars-blue)">STARFLEET</div>
+            <div class="lcars-pill" style="background: var(--lcars-pink)">
+                <span class="status-indicator status-online"></span>
+                ONLINE
             </div>
-        </nav>
+        </div>
     </header>
 
-    <main>
-        <section class="hero">
-            <div class="hero-content fade-in">
-                <h1>USS Surnia NX-2526</h1>
-                <p>Explore the final frontier in this immersive Star Trek roleplaying experience. Join our crew and embark on exciting missions across the galaxy.</p>
-                <a href="#join" class="btn">Join the Adventure</a>
+    <main class="lcars-main">
+        <aside class="lcars-sidebar">
+            <div class="lcars-button">MISSION LOG</div>
+            <div class="lcars-button" style="background: var(--lcars-blue)">CREW ROSTER</div>
+            <div class="lcars-button" style="background: var(--lcars-pink)">SHIP SYSTEMS</div>
+            <div class="lcars-button" style="background: var(--lcars-tan)">COMMUNICATIONS</div>
+        </aside>
+
+        <section class="lcars-content">
+            <h1 class="lcars-title">Welcome to USS Surnia</h1>
+            <div class="lcars-panel">
+                <span class="pulse">ACTIVE MISSION: DEEP SPACE EXPLORATION</span>
+            </div>
+
+            <div class="lcars-grid">
+                <div class="lcars-card">
+                    <h2 style="color: var(--lcars-purple)">Ship Specifications</h2>
+                    <p class="lcars-text">NX-class starship equipped with state-of-the-art exploration and scientific research capabilities.</p>
+                </div>
+                <div class="lcars-card">
+                    <h2 style="color: var(--lcars-blue)">Current Status</h2>
+                    <p class="lcars-text">All systems operational. Currently engaged in deep space exploration mission.</p>
+                </div>
+                <div class="lcars-card">
+                    <h2 style="color: var(--lcars-pink)">Join the Crew</h2>
+                    <p class="lcars-text">Multiple positions available. Access crew manifest for details.</p>
+                </div>
             </div>
         </section>
 
-        <section id="about" class="section">
-            <h2>About the Ship</h2>
-            <div class="cards">
-                <div class="card">
-                    <h3>Ship Specifications</h3>
-                    <p>The USS Surnia is an NX-class starship, designed for deep space exploration and scientific research. With state-of-the-art technology and a dedicated crew, we push the boundaries of known space.</p>
-                </div>
-                <div class="card">
-                    <h3>Mission Statement</h3>
-                    <p>Our primary mission is to explore strange new worlds, seek out new life and new civilizations, and boldly go where no one has gone before.</p>
-                </div>
-                <div class="card">
-                    <h3>Roleplay Setting</h3>
-                    <p>Set in the Star Trek universe, our Discord-based roleplay offers an immersive experience where every player contributes to the ongoing narrative of our adventures.</p>
-                </div>
-            </div>
-        </section>
-
-        <section id="crew" class="section">
-            <h2>Join the Crew</h2>
-            <div class="cards">
-                <div class="card">
-                    <h3>Available Positions</h3>
-                    <p>From command officers to engineering specialists, medical personnel to security teams, find your place among the stars.</p>
-                </div>
-                <div class="card">
-                    <h3>How to Join</h3>
-                    <p>Join our Discord server to begin your journey. New players are always welcome, and experienced members are ready to help you get started.</p>
-                </div>
-            </div>
-        </section>
+        <aside class="lcars-sidebar">
+            <div class="lcars-button" style="background: var(--lcars-lightblue)">SHIP STATUS</div>
+            <div class="lcars-button" style="background: var(--lcars-brown)">TACTICAL</div>
+            <div class="lcars-button" style="background: var(--lcars-orange)">SCIENCE</div>
+            <div class="lcars-button" style="background: var(--lcars-purple)">ENGINEERING</div>
+        </aside>
     </main>
 
-    <footer class="footer">
-        <div class="social-links">
-            <a href="#"><i class="fab fa-discord"></i></a>
-            <a href="#"><i class="fab fa-twitter"></i></a>
-            <a href="#"><i class="fab fa-reddit"></i></a>
-        </div>
-        <p>&copy; 2024 USS Surnia NX-2526 Roleplay Community. Star Trek is a registered trademark.</p>
-    </footer>
-
     <script>
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
+        // Interactive button functionality
+        document.querySelectorAll('.lcars-button').forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove active state from all buttons
+                document.querySelectorAll('.lcars-button').forEach(btn => {
+                    btn.style.transform = 'translateX(0)';
                 });
+                // Add active state to clicked button
+                this.style.transform = 'translateX(10px)';
+                
+                // Add sound effect
+                const audio = new Audio('data:audio/wav;base64,UklGRl9vT19');
+                audio.volume = 0.2;
+                audio.play().catch(() => {}); // Ignore errors if audio can't play
             });
         });
 
-        // Intersection Observer for fade-in animations
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('fade-in');
-                }
+        // Add hover effects for panels
+        document.querySelectorAll('.lcars-panel').forEach(panel => {
+            panel.addEventListener('mouseover', function() {
+                this.style.boxShadow = `0 0 20px ${getComputedStyle(this).backgroundColor}`;
+            });
+            panel.addEventListener('mouseout', function() {
+                this.style.boxShadow = 'none';
             });
         });
 
-        document.querySelectorAll('.card').forEach((el) => observer.observe(el));
+        // Simulate random system updates
+        setInterval(() => {
+            const cards = document.querySelectorAll('.lcars-card');
+            const randomCard = cards[Math.floor(Math.random() * cards.length)];
+            randomCard.style.borderColor = var(--lcars-lightblue);
+            setTimeout(() => {
+                randomCard.style.borderColor = 'transparent';
+            }, 1000);
+        }, 5000);
     </script>
 </body>
 </html>
