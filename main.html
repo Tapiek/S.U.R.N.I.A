@@ -3,122 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>USS Surnia NX-2526 | Main Interface</title>
+    <title>USS Surnia NX-2526 | LCARS Interface</title>
+    <!-- Include Orbitron and Chakra Petch fonts for futuristic look -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Include FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --lcars-orange: #FF4D4D;
-            --lcars-blue: #00A6FB;
-            --lcars-gray: #404552;
-            --lcars-dark-gray: #2A2C33;
-            --background: #000000;
-            --text: #ffffff;
-            --panel-bg: #1A1A1A;
+            --primary-blue: #00A6FB;
+            --secondary-blue: #0066cc;
+            --accent-orange: #FF4D4D;
+            --accent-yellow: #FFB74D;
+            --dark-bg: #000819;
+            --panel-bg: #0A0F1F;
+            --text-primary: #FFFFFF;
+            --text-secondary: #B0B8C4;
+            --glow-blue: rgba(0, 166, 251, 0.3);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Arial', sans-serif;
+            font-family: 'Chakra Petch', sans-serif;
             cursor: default;
             user-select: none;
         }
 
         body {
-            background-color: var(--background);
-            color: var(--text);
+            background: var(--dark-bg);
+            color: var(--text-primary);
             min-height: 100vh;
             overflow: hidden;
-            display: grid;
-            grid-template-rows: auto 1fr auto;
         }
 
-        .lcars-container {
+        .lcars-header {
+            height: 60px;
+            background: var(--panel-bg);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            border-bottom: 2px solid var(--primary-blue);
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .header-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stardate {
+            color: var(--accent-orange);
+            font-size: 1.2em;
+            letter-spacing: 2px;
+            animation: pulse 2s infinite;
+        }
+
+        .main-container {
             display: grid;
             grid-template-columns: 300px 1fr 100px;
-            height: 100vh;
+            height: calc(100vh - 60px);
             gap: 2px;
-            padding: 20px;
-            background: var(--background);
         }
 
-        /* Left Panel */
         .left-panel {
             background: var(--panel-bg);
-            border-radius: 15px 0 0 15px;
             padding: 20px;
             display: flex;
             flex-direction: column;
             gap: 20px;
+            border-right: 1px solid var(--primary-blue);
         }
 
         .system-status {
-            color: var(--lcars-orange);
+            font-family: 'Orbitron', sans-serif;
+            color: var(--accent-orange);
             font-size: 24px;
+            text-align: center;
             margin-bottom: 20px;
-        }
-
-        .status-bars {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .status-bar {
-            height: 15px;
-            background: var(--lcars-dark-gray);
             position: relative;
         }
 
-        .status-bar-fill {
-            height: 100%;
-            background: var(--lcars-blue);
-            animation: pulse 2s infinite;
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            background: var(--accent-orange);
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 10px;
+            animation: blink 1s infinite;
         }
 
-        .status-labels {
+        .status-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 10px;
-            margin-bottom: 20px;
         }
 
-        .status-label {
-            background: var(--lcars-gray);
-            padding: 5px 10px;
+        .status-box {
+            background: rgba(0, 166, 251, 0.1);
+            padding: 15px;
             border-radius: 5px;
-            font-size: 12px;
-            text-align: center;
+            border: 1px solid var(--primary-blue);
+            transition: all 0.3s ease;
         }
 
-        /* Circular Displays */
+        .status-box:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 15px var(--glow-blue);
+        }
+
         .circular-display {
             width: 150px;
             height: 150px;
-            border-radius: 50%;
-            border: 2px solid var(--lcars-blue);
-            position: relative;
             margin: 20px auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        .circular-inner {
-            width: 80%;
-            height: 80%;
+            position: relative;
             border-radius: 50%;
-            background: radial-gradient(circle, var(--lcars-blue) 0%, transparent 70%);
-            animation: rotate 4s linear infinite;
+            background: 
+                radial-gradient(circle at center, 
+                    var(--primary-blue) 0%, 
+                    transparent 70%);
+            border: 2px solid var(--primary-blue);
+            animation: rotate 10s linear infinite;
         }
 
-        /* Main Content */
         .main-content {
             background: var(--panel-bg);
-            padding: 20px;
             position: relative;
             overflow: hidden;
+            padding: 20px;
         }
 
         .grid-overlay {
@@ -128,30 +144,81 @@
             right: 0;
             bottom: 0;
             background-image: 
-                linear-gradient(var(--lcars-dark-gray) 1px, transparent 1px),
-                linear-gradient(90deg, var(--lcars-dark-gray) 1px, transparent 1px);
+                linear-gradient(var(--glow-blue) 1px, transparent 1px),
+                linear-gradient(90deg, var(--glow-blue) 1px, transparent 1px);
             background-size: 50px 50px;
             opacity: 0.1;
+            pointer-events: none;
         }
 
-        /* Right Panel */
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .info-card {
+            background: rgba(0, 166, 251, 0.05);
+            border: 1px solid var(--primary-blue);
+            border-radius: 5px;
+            padding: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px var(--glow-blue);
+        }
+
+        .info-card h3 {
+            color: var(--accent-yellow);
+            font-family: 'Orbitron', sans-serif;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+        }
+
         .right-panel {
             background: var(--panel-bg);
-            border-radius: 0 15px 15px 0;
             padding: 10px;
             display: flex;
             flex-direction: column;
             gap: 10px;
+            border-left: 1px solid var(--primary-blue);
         }
 
         .control-button {
-            background: var(--lcars-gray);
-            height: 30px;
+            height: 40px;
+            background: var(--primary-blue);
             border-radius: 5px;
-            margin-bottom: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .control-button:hover {
+            background: var(--accent-orange);
+            transform: translateX(-5px);
+        }
+
+        .scan-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                var(--primary-blue),
+                transparent
+            );
+            animation: scan 2s linear infinite;
         }
 
         /* Animations */
+        @keyframes scan {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+
         @keyframes pulse {
             0% { opacity: 0.6; }
             50% { opacity: 1; }
@@ -163,155 +230,387 @@
             to { transform: rotate(360deg); }
         }
 
-        .scan-line {
-            position: absolute;
-            width: 100%;
-            height: 2px;
-            background: rgba(0, 166, 251, 0.2);
-            animation: scan 2s linear infinite;
+        @keyframes blink {
+            0% { opacity: 0.2; }
+            50% { opacity: 1; }
+            100% { opacity: 0.2; }
         }
 
-        @keyframes scan {
-            0% { transform: translateY(-100%); }
-            100% { transform: translateY(100%); }
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--accent-orange);
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+            animation: slideIn 0.3s ease forwards;
         }
 
-        /* Top Status Bar */
-        .top-bar {
-            height: 30px;
-            background: var(--panel-bg);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 20px;
-            color: var(--lcars-blue);
-            font-size: 12px;
-        }
-
-        /* Bottom Status Display */
-        .bottom-display {
-            height: 100px;
-            background: var(--panel-bg);
-            padding: 10px;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .bottom-circular {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            border: 2px solid var(--lcars-blue);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-
-        .coordinates {
-            color: var(--lcars-orange);
-            font-family: monospace;
-            font-size: 12px;
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
         }
     </style>
 </head>
 <body>
-    <div class="top-bar">
-        <span>STARDATE: 47634.44</span>
-        <span>USS SURNIA NX-2526</span>
-        <span>SYSTEM READY</span>
+    <div class="lcars-header">
+        <div class="header-item">
+            <span class="stardate">STARDATE 47634.44</span>
+        </div>
+        <div class="header-item">
+            <span style="font-size: 1.2em; letter-spacing: 2px;">USS SURNIA NX-2526</span>
+        </div>
+        <div class="header-item">
+            <span class="status-indicator"></span>
+            <span>SYSTEM READY</span>
+        </div>
     </div>
 
-    <div class="lcars-container">
+    <div class="main-container">
         <div class="left-panel">
-            <div class="system-status">SYSTEM READY</div>
-            
-            <div class="status-labels">
-                <div class="status-label">D-5558</div>
-                <div class="status-label">P-6753</div>
-                <div class="status-label">V-3924</div>
-                <div class="status-label">B-9858</div>
+            <div class="system-status">
+                SYSTEM STATUS
             </div>
-
-            <div class="status-bars">
-                <div class="status-bar"><div class="status-bar-fill" style="width: 75%"></div></div>
-                <div class="status-bar"><div class="status-bar-fill" style="width: 90%"></div></div>
-                <div class="status-bar"><div class="status-bar-fill" style="width: 60%"></div></div>
-                <div class="status-bar"><div class="status-bar-fill" style="width: 85%"></div></div>
+            <div class="status-grid">
+                <div class="status-box" data-system="warp">
+                    <h3>WARP CORE</h3>
+                    <p class="value">98.3%</p>
+                </div>
+                <div class="status-box" data-system="shields">
+                    <h3>SHIELDS</h3>
+                    <p class="value">100%</p>
+                </div>
+                <div class="status-box" data-system="power">
+                    <h3>POWER</h3>
+                    <p class="value">87.5%</p>
+                </div>
+                <div class="status-box" data-system="life">
+                    <h3>LIFE SUPPORT</h3>
+                    <p class="value">99.9%</p>
+                </div>
             </div>
-
-            <div class="circular-display">
-                <div class="circular-inner"></div>
-            </div>
-
-            <div class="circular-display">
-                <div class="circular-inner"></div>
-            </div>
+            <div class="circular-display"></div>
         </div>
 
         <div class="main-content">
             <div class="grid-overlay"></div>
             <div class="scan-line"></div>
+            <div class="content-grid">
+                <!-- Dynamic content will be inserted here by JavaScript -->
+            </div>
         </div>
 
         <div class="right-panel">
-            <div class="control-button"></div>
-            <div class="control-button"></div>
-            <div class="control-button"></div>
-            <div class="control-button"></div>
-            <div class="control-button"></div>
-            <div class="control-button"></div>
-            <div class="control-button"></div>
-            <div class="control-button"></div>
+            <div class="control-button" data-action="scan"></div>
+            <div class="control-button" data-action="shields"></div>
+            <div class="control-button" data-action="weapons"></div>
+            <div class="control-button" data-action="comms"></div>
+            <div class="control-button" data-action="sensors"></div>
         </div>
     </div>
 
-    <div class="bottom-display">
-        <div class="bottom-circular">
-            <div class="circular-inner"></div>
-        </div>
-        <div class="coordinates">
-            SOURCE [041.37.6] ◊ HC-59 358.29<br>
-            [014.39.6] V TP-14 159.46
-        </div>
-    </div>
+    <div class="alert"></div>
 
     <script>
-        // Simulate system updates
-        setInterval(() => {
-            const bars = document.querySelectorAll('.status-bar-fill');
-            bars.forEach(bar => {
-                const newWidth = Math.random() * 30 + 60; // Random between 60-90%
-                bar.style.width = `${newWidth}%`;
-            });
-        }, 2000);
+        // Content data
+        const shipSystems = [
+            {
+                title: "NAVIGATION",
+                content: "Course: 147 mark 32\nVelocity: Warp 5.2",
+                updates: ["Course adjusted", "Speed increased", "Entering sector 31"]
+            },
+            {
+                title: "TACTICAL",
+                content: "Weapons: Online\nShields: 100%",
+                updates: ["Shields at maximum", "Phasers charged", "Photon torpedoes ready"]
+            },
+            {
+                title: "ENGINEERING",
+                content: "Warp core: Stable\nPower output: Nominal",
+                updates: ["Core temperature normal", "Matter/Antimatter flow stable", "EPS grid optimal"]
+            },
+            {
+                title: "ENVIRONMENTAL",
+                content: "Life support: Normal\nAtmosphere: Standard",
+                updates: ["O2 levels normal", "Gravity plating functional", "Temperature regulated"]
+            },
+            {
+                title: "CREW STATUS",
+                content: "Personnel: 87/100\nShift: Alpha",
+                updates: ["Medical bay: Clear", "Security: Alert", "Engineering: Nominal"]
+            },
+            {
+                title: "MISSION LOG",
+                content: "Current: Deep Space Exploration\nSector: Beta Quadrant",
+                updates: ["Log updated", "New coordinates received", "Mission parameters adjusted"]
+            }
+        ];
 
-        // Add ambient sound on interaction
-        document.addEventListener('click', () => {
+        // Initialize content
+        function initializeContent() {
+            const contentGrid = document.querySelector('.content-grid');
+            shipSystems.forEach(system => {
+                const card = document.createElement('div');
+                card.className = 'info-card';
+                card.innerHTML = `
+                    <h3>${system.title}</h3>
+                    <p>${system.content.replace('\n', '<br>')}</p>
+                `;
+                contentGrid.appendChild(card);
+            });
+        }
+
+        // Update stardate
+        function updateStardate() {
+            const stardateElement = document.querySelector('.stardate');
+            let currentStardate = parseFloat(stardateElement.textContent.split(' ')[1]);
+            currentStardate += 0.01;
+            stardateElement.textContent = `STARDATE ${currentStardate.toFixed(2)}`;
+        }
+
+        // System status updates
+        function updateSystemStatus() {
+            document.querySelectorAll('.status-box .value').forEach(element => {
+                const currentValue = parseFloat(element.textContent);
+                const newValue = Math.max(75, Math.min(100, currentValue + (Math.random() - 0.5) * 5));
+                element.textContent = `${newValue.toFixed(1)}%`;
+            });
+        }
+
+        // Show alert
+        function showAlert(message) {
+            const alert = document.querySelector('.alert');
+            alert.textContent = message;
+            alert.style.display = 'block';
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 3000);
+        }
+
+        // Random system updates
+        function randomSystemUpdate() {
+            const system = shipSystems[Math.floor(Math.random() * shipSystems.length)];
+            const update = system.updates[Math.floor(Math.random() * system.updates.length)];
+            showAlert(`${system.title}: ${update}`);
+        }
+
+        // Initialize and start updates
+        initializeContent();
+        setInterval(updateStardate, 10000);
+        setInterval(updateSystemStatus, 3000);
+        setInterval(randomSystemUpdate, 5000);
+
+        // Add click handlers for control buttons
+        document.querySelectorAll('.control-button').forEach(button => {
+            button.addEventListener('click', () => {
+                const action = button.dataset.action;
+                showAlert(`${action.toUpperCase()} SYSTEMS ACTIVATED`);
+                
+                // Play LCARS beep sound
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(1800, audioContext.currentTime);
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.start();
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                setTimeout(() => oscillator.stop(), 100);
+            });
+        });
+
+        // Add hover effect sound for status boxes
+        document.querySelectorAll('.status-box').forEach(box => {
+        box.addEventListener('mouseenter', () => {
             const audioContext = new (window.AudioContext || window.webkitAudioContext)();
             const oscillator = audioContext.createOscillator();
             const gainNode = audioContext.createGain();
             
             oscillator.type = 'sine';
-            oscillator.frequency.setValueAtTime(1500, audioContext.currentTime);
+            oscillator.frequency.setValueAtTime(1200, audioContext.currentTime);
             gainNode.gain.setValueAtTime(0.05, audioContext.currentTime);
             
             oscillator.connect(gainNode);
             gainNode.connect(audioContext.destination);
             
             oscillator.start();
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-            
-            setTimeout(() => oscillator.stop(), 100);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.05);
+            setTimeout(() => oscillator.stop(), 50);
         });
+    });
 
-        // Update stardate
-        setInterval(() => {
-            const stardate = document.querySelector('.top-bar span:first-child');
-            const current = parseFloat(stardate.textContent.split(': ')[1]);
-            stardate.textContent = `STARDATE: ${(current + 0.01).toFixed(2)}`;
-        }, 10000);
-    </script>
-</body>
+    // Dynamic content updates
+    class ShipSystemsMonitor {
+        constructor() {
+            this.alertLevel = 'normal';
+            this.systemStatuses = new Map();
+            this.initializeSystemStatuses();
+        }
+
+        initializeSystemStatuses() {
+            ['warp', 'shields', 'power', 'life'].forEach(system => {
+                this.systemStatuses.set(system, {
+                    status: 'nominal',
+                    value: 100,
+                    alerts: []
+                });
+            });
+        }
+
+        updateSystem(system, value, status = 'nominal') {
+            const currentStatus = this.systemStatuses.get(system);
+            currentStatus.value = value;
+            currentStatus.status = status;
+            this.updateDisplay(system);
+        }
+
+        updateDisplay(system) {
+            const statusBox = document.querySelector(`[data-system="${system}"] .value`);
+            if (statusBox) {
+                statusBox.textContent = `${this.systemStatuses.get(system).value.toFixed(1)}%`;
+                this.checkAlertStatus(system);
+            }
+        }
+
+        checkAlertStatus(system) {
+            const status = this.systemStatuses.get(system);
+            if (status.value < 80) {
+                this.triggerAlert(`Warning: ${system.toUpperCase()} system below optimal levels`);
+            }
+        }
+
+        triggerAlert(message) {
+            showAlert(message);
+            this.playAlertSound();
+        }
+
+        playAlertSound() {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.type = 'square';
+            oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
+            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.start();
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+            setTimeout(() => oscillator.stop(), 500);
+        }
+    }
+
+    // Initialize ship systems monitor
+    const shipMonitor = new ShipSystemsMonitor();
+
+    // Simulated ship events
+    const shipEvents = [
+        "Quantum fluctuation detected in sector 31",
+        "Subspace anomaly detected",
+        "Incoming transmission",
+        "Long-range sensors detect vessel",
+        "Minor power fluctuation in EPS grid",
+        "Routine diagnostic complete",
+        "Course correction calculated",
+        "Atmospheric processors optimized"
+    ];
+
+    function simulateShipEvent() {
+        const event = shipEvents[Math.floor(Math.random() * shipEvents.length)];
+        showAlert(event);
+    }
+
+    // Create dynamic particle effect in main content
+    function createParticleEffect() {
+        const mainContent = document.querySelector('.main-content');
+        const particle = document.createElement('div');
+        particle.style.cssText = `
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--primary-blue);
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0;
+            transition: all 2s linear;
+        `;
+        
+        const x = Math.random() * 100;
+        const y = Math.random() * 100;
+        
+        particle.style.left = `${x}%`;
+        particle.style.top = `${y}%`;
+        
+        mainContent.appendChild(particle);
+        
+        requestAnimationFrame(() => {
+            particle.style.opacity = '0.5';
+            particle.style.transform = `translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px)`;
+        });
+        
+        setTimeout(() => particle.remove(), 2000);
+    }
+
+    // Simulate system fluctuations
+    function simulateSystemFluctuations() {
+        ['warp', 'shields', 'power', 'life'].forEach(system => {
+            const currentValue = parseFloat(document.querySelector(`[data-system="${system}"] .value`).textContent);
+            const fluctuation = (Math.random() - 0.5) * 5;
+            const newValue = Math.max(75, Math.min(100, currentValue + fluctuation));
+            shipMonitor.updateSystem(system, newValue);
+        });
+    }
+
+    // Initialize all dynamic elements
+    function initializeDynamicElements() {
+        // Update particles
+        setInterval(createParticleEffect, 1000);
+        
+        // Simulate ship events
+        setInterval(simulateShipEvent, 15000);
+        
+        // Update system fluctuations
+        setInterval(simulateSystemFluctuations, 3000);
+        
+        // Add interactive elements
+        document.querySelectorAll('.info-card').forEach(card => {
+            card.addEventListener('click', () => {
+                card.style.transform = 'scale(1.05)';
+                setTimeout(() => card.style.transform = '', 200);
+            });
+        });
+    }
+
+    // Initialize everything
+    document.addEventListener('DOMContentLoaded', () => {
+        initializeContent();
+        initializeDynamicElements();
+    });
+
+    // Add keypress commands
+    document.addEventListener('keypress', (e) => {
+        switch(e.key.toLowerCase()) {
+            case 'r':
+                showAlert('Initiating system scan...');
+                break;
+            case 's':
+                showAlert('Shield status: Active');
+                break;
+            case 'w':
+                showAlert('Weapons systems: Standing by');
+                break;
+            case 'c':
+                showAlert('Communications channel open');
+                break;
+        }
+    });
+</script>
 </html>
