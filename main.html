@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>USS Surnia NX-2526 | Main Systems</title>
+    <title>USS Surnia NX-2526</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
             --primary-blue: #00A6FB;
@@ -33,45 +34,27 @@
             color: var(--text);
             min-height: 100vh;
             overflow: hidden;
-            display: grid;
-            grid-template-rows: auto 1fr auto;
         }
 
-        /* Main Layout */
         .interface-container {
             display: grid;
-            grid-template-columns: 280px 1fr 280px;
-            gap: 2px;
+            grid-template-rows: auto 1fr;
             height: 100vh;
+            gap: 20px;
             padding: 20px;
             position: relative;
         }
 
-        /* Top Bar */
-        .top-bar {
-            grid-column: 1 / -1;
-            height: 60px;
+        /* Header Section */
+        .header {
+            display: grid;
+            grid-template-columns: 300px 1fr 300px;
+            gap: 20px;
+            align-items: center;
             background: var(--panel-bg);
+            padding: 15px 20px;
             border: 1px solid var(--primary-blue);
             border-radius: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 20px;
-            margin-bottom: 20px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .top-bar::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 200%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--primary-blue), transparent);
-            animation: scan 4s linear infinite;
         }
 
         .ship-title {
@@ -81,48 +64,23 @@
             letter-spacing: 2px;
         }
 
-        .stardate {
+        .coordinates {
             font-family: 'Share Tech Mono', monospace;
             color: var(--primary-blue);
+            text-align: right;
+            font-size: 0.9em;
         }
 
-        /* Left Panel */
-        .left-panel {
-            background: var(--panel-bg);
-            border: 1px solid var(--primary-blue);
-            border-radius: 10px;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
+        /* Main Content Grid */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 300px 1fr 300px;
+            gap: 20px;
+            height: calc(100vh - 120px);
         }
 
-        /* Main Content */
-        .main-content {
-            background: var(--panel-bg);
-            border: 1px solid var(--primary-blue);
-            border-radius: 10px;
-            padding: 20px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .grid-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: 
-                linear-gradient(var(--glow-blue) 1px, transparent 1px),
-                linear-gradient(90deg, var(--glow-blue) 1px, transparent 1px);
-            background-size: 50px 50px;
-            opacity: 0.1;
-            pointer-events: none;
-        }
-
-        /* Right Panel */
-        .right-panel {
+        /* Side Panels */
+        .side-panel {
             background: var(--panel-bg);
             border: 1px solid var(--primary-blue);
             border-radius: 10px;
@@ -138,7 +96,6 @@
             padding: 15px;
             border-radius: 8px;
             border: 1px solid var(--primary-blue);
-            margin-bottom: 10px;
         }
 
         .status-title {
@@ -148,10 +105,72 @@
             margin-bottom: 8px;
         }
 
-        .status-value {
-            font-family: 'Share Tech Mono', monospace;
+        .status-bar {
+            height: 6px;
+            background: var(--dark-blue);
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 5px 0;
+        }
+
+        .status-bar-fill {
+            height: 100%;
+            background: var(--primary-blue);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Navigation Buttons */
+        .nav-button {
+            background: var(--dark-blue);
+            padding: 12px 15px;
+            border: none;
+            border-radius: 5px;
             color: var(--text);
-            font-size: 1.2em;
+            font-family: 'Orbitron', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            text-decoration: none;
+        }
+
+        .nav-button:hover {
+            background: var(--primary-blue);
+            transform: translateX(5px);
+        }
+
+        /* Main Content Area */
+        .main-content {
+            background: var(--panel-bg);
+            border: 1px solid var(--primary-blue);
+            border-radius: 10px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        /* Grid Overlay */
+        .grid-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(var(--glow-blue) 1px, transparent 1px),
+                linear-gradient(90deg, var(--glow-blue) 1px, transparent 1px);
+            background-size: 50px 50px;
+            opacity: 0.1;
+            pointer-events: none;
         }
 
         /* Circular Displays */
@@ -176,56 +195,19 @@
             animation: rotate 10s linear infinite;
         }
 
-        /* Navigation Buttons */
-        .nav-button {
-            background: var(--dark-blue);
-            padding: 12px;
-            border-radius: 5px;
-            border: none;
-            color: var(--text);
-            font-family: 'Orbitron', sans-serif;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: left;
-        }
-
-        .nav-button:hover {
-            background: var(--primary-blue);
-            transform: translateX(5px);
-        }
-
-        /* Content Sections */
-        .content-section {
-            display: none;
-            padding: 20px;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .content-section.active {
-            display: block;
-        }
-
-        /* System Bars */
-        .system-bar {
-            height: 8px;
-            background: var(--dark-blue);
-            border-radius: 4px;
-            overflow: hidden;
-            margin: 5px 0;
-        }
-
-        .system-bar-fill {
-            height: 100%;
-            background: var(--primary-blue);
-            width: 0%;
-            transition: width 0.3s ease;
-            position: relative;
+        /* Scan Line Effect */
+        .scan-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary-blue), transparent);
+            animation: scan 2s linear infinite;
         }
 
         /* Animations */
         @keyframes scan {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
         }
 
         @keyframes rotate {
@@ -244,22 +226,34 @@
             100% { opacity: 0.6; transform: scale(0.98); }
         }
 
-        /* Utility Classes */
-        .pulse {
-            animation: pulse 2s infinite;
+        /* Content Styling */
+        h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--primary-blue);
+            margin-bottom: 20px;
         }
 
-        .hidden {
-            display: none;
+        p {
+            line-height: 1.6;
+            margin-bottom: 15px;
         }
 
         /* Responsive Design */
         @media (max-width: 1200px) {
-            .interface-container {
+            .main-grid {
                 grid-template-columns: 1fr;
             }
             
-            .left-panel, .right-panel {
+            .side-panel {
+                display: none;
+            }
+            
+            .header {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .coordinates {
                 display: none;
             }
         }
@@ -267,198 +261,285 @@
 </head>
 <body>
     <div class="interface-container">
-        <div class="top-bar">
+        <header class="header">
             <div class="ship-title">USS SURNIA NX-2526</div>
-            <div class="system-status">SYSTEMS NOMINAL</div>
-            <div class="stardate">STARDATE 47634.44</div>
+            <div id="system-status" class="system-status">SYSTEM READY</div>
+            <div class="coordinates">[47634.44] ◊ HC-59 358.29</div>
+        </header>
+
+        <div class="main-grid">
+            <aside class="side-panel">
+                <div class="status-display">
+                    <div class="status-title">WARP CORE</div>
+                    <div class="status-bar">
+                        <div class="status-bar-fill" style="width: 98%"></div>
+                    </div>
+                    <div class="status-value">98.3%</div>
+                </div>
+
+                <div class="status-display">
+                    <div class="status-title">SHIELDS</div>
+                    <div class="status-bar">
+                        <div class="status-bar-fill" style="width: 100%"></div>
+                    </div>
+                    <div class="status-value">100%</div>
+                </div>
+
+                <div class="circular-display">
+                    <div class="circular-inner"></div>
+                </div>
+
+                <button class="nav-button" data-page="missions">MISSION LOGS</button>
+                <button class="nav-button" data-page="crew">CREW MANIFEST</button>
+                <button class="nav-button" data-page="characters">CHARACTER CREATION</button>
+                <button class="nav-button" data-page="rules">RULES & GUIDELINES</button>
+            </aside>
+
+            <main class="main-content">
+                <div class="grid-overlay"></div>
+                <div class="scan-line"></div>
+
+                <div class="content-section active" id="home">
+                    <h2>WELCOME TO THE USS SURNIA</h2>
+                    <p>Join our Star Trek roleplay community aboard the USS Surnia NX-2526. Experience deep space exploration, diplomatic missions, and scientific discoveries in our play-by-discord environment.</p>
+                    
+                    <div class="status-display">
+                        <div class="status-title">AVAILABLE POSITIONS</div>
+                        <p>COMMAND: 2 positions<br>
+                        SCIENCE: 3 positions<br>
+                        ENGINEERING: 1 position<br>
+                        MEDICAL: 2 positions</p>
+                    </div>
+                </div>
+
+                <div class="content-section" id="missions">
+                    <h2>ACTIVE MISSIONS</h2>
+                    <!-- Mission content -->
+                </div>
+
+                <div class="content-section" id="crew">
+                    <h2>CREW MANIFEST</h2>
+                    <!-- Crew content -->
+                </div>
+
+                <div class="content-section" id="characters">
+                    <h2>CHARACTER CREATION</h2>
+                    <!-- Character creation form -->
+                </div>
+
+                <div class="content-section" id="rules">
+                    <h2>RULES & GUIDELINES</h2>
+                    <!-- Rules content -->
+                </div>
+            </main>
+
+            <aside class="side-panel">
+                <div class="status-display">
+                    <div class="status-title">ACTIVE CREW</div>
+                    <div class="status-value">24</div>
+                </div>
+
+                <div class="status-display">
+                    <div class="status-title">CURRENT SHIFT</div>
+                    <div class="status-value">ALPHA</div>
+                </div>
+
+                <div class="circular-display">
+                    <div class="circular-inner"></div>
+                </div>
+
+                <a href="https://discord.gg/your-invite" target="_blank" class="nav-button">
+                    JOIN DISCORD
+                </a>
+            </aside>
         </div>
-
-        <aside class="left-panel">
-            <div class="status-display">
-                <div class="status-title">WARP CORE</div>
-                <div class="system-bar">
-                    <div class="system-bar-fill" style="width: 98%"></div>
-                </div>
-                <div class="status-value">98.3%</div>
-            </div>
-
-            <div class="status-display">
-                <div class="status-title">SHIELDS</div>
-                <div class="system-bar">
-                    <div class="system-bar-fill" style="width: 100%"></div>
-                </div>
-                <div class="status-value">100%</div>
-            </div>
-
-            <div class="circular-display">
-                <div class="circular-inner"></div>
-            </div>
-
-            <button class="nav-button" data-page="missions">MISSION LOGS</button>
-            <button class="nav-button" data-page="crew">CREW MANIFEST</button>
-            <button class="nav-button" data-page="characters">CHARACTER CREATION</button>
-            <button class="nav-button" data-page="rules">RULES & GUIDELINES</button>
-        </aside>
-
-        <main class="main-content">
-            <div class="grid-overlay"></div>
-            
-            <section id="home" class="content-section active">
-                <h2>WELCOME TO THE USS SURNIA</h2>
-                <p>A Star Trek play-by-discord roleplaying community.</p>
-                <!-- Additional content -->
-            </section>
-
-            <section id="missions" class="content-section">
-                <h2>CURRENT MISSIONS</h2>
-                <!-- Mission content -->
-            </section>
-
-            <section id="crew" class="content-section">
-                <h2>CREW MANIFEST</h2>
-                <!-- Crew content -->
-            </section>
-
-            <section id="characters" class="content-section">
-                <h2>CHARACTER CREATION</h2>
-                <!-- Character creation form -->
-            </section>
-
-            <section id="rules" class="content-section">
-                <h2>RULES & GUIDELINES</h2>
-                <!-- Rules content -->
-            </section>
-        </main>
-
-        <aside class="right-panel">
-            <div class="status-display">
-                <div class="status-title">ACTIVE CREW</div>
-                <div class="status-value">24</div>
-            </div>
-
-            <div class="status-display">
-                <div class="status-title">CURRENT MISSION</div>
-                <div class="status-value">IN PROGRESS</div>
-            </div>
-
-            <div class="status-display">
-                <div class="status-title">DISCORD STATUS</div>
-                <div class="status-value">ONLINE</div>
-            </div>
-
-            <div class="circular-display">
-                <div class="circular-inner"></div>
-            </div>
-
-            <a href="https://discord.gg/your-invite" target="_blank" class="nav-button">
-                JOIN DISCORD
-            </a>
-        </aside>
     </div>
 
     <script>
-        // Audio System
-        class AudioSystem {
+        class Interface {
             constructor() {
-                this.context = new (window.AudioContext || window.webkitAudioContext)();
+                this.initializeAudio();
+                this.initializeNavigation();
+                this.startSystemUpdates();
+            }
+
+            initializeAudio() {
+                this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
             }
 
             playSound(type) {
-                const oscillator = this.context.createOscillator();
-                const gainNode = this.context.createGain();
+                const oscillator = this.audioContext.createOscillator();
+                const gainNode = this.audioContext.createGain();
                 
                 oscillator.connect(gainNode);
-                gainNode.connect(this.context.destination);
+                gainNode.connect(this.audioContext.destination);
 
                 switch(type) {
                     case 'click':
-                        oscillator.frequency.setValueAtTime(1800, this.context.currentTime);
-                        gainNode.gain.setValueAtTime(0.1, this.context.currentTime);
+                        oscillator.frequency.setValueAtTime(1800, this.audioContext.currentTime);
+                        gainNode.gain.setValueAtTime(0.1, this.audioContext.currentTime);
                         oscillator.start();
-                        gainNode.gain.exponentialRampToValueAtTime(0.01, this.context.currentTime + 0.1);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.1);
                         setTimeout(() => oscillator.stop(), 100);
                         break;
                     case 'alert':
-                        oscillator.frequency.setValueAtTime(440, this.context.currentTime);
-                        gainNode.gain.setValueAtTime(0.2, this.context.currentTime);
+                        oscillator.frequency.setValueAtTime(440, this.audioContext.currentTime);
+                        gainNode.gain.setValueAtTime(0.2, this.audioContext.currentTime);
                         oscillator.start();
-                        gainNode.gain.exponentialRampToValueAtTime(0.01, this.context.currentTime + 0.5);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.5);
                         setTimeout(() => oscillator.stop(), 500);
                         break;
                 }
-            }
-        }
-
-        // Ship Systems
-        class ShipSystems {
-            constructor() {
-                this.audio = new AudioSystem();
-                this.initializeSystemMonitoring();
-            }
-
-            initializeSystemMonitoring() {
-                setInterval(() => this.updateSystems(), 3000);
-                this.updateStardate();
-                setInterval(() => this.updateStardate(), 10000);
-            }
-
-            updateSystems() {
-                document.querySelectorAll('.system-bar-fill').forEach(bar => {
-                    const currentWidth = parseFloat(bar.style.width);
-                    const fluctuation = (Math.random() - 0.5) * 2;
-                    const newWidth = Math.max(75, Math.min(100, currentWidth + fluctuation));
-                    bar.style.width = `${newWidth}%`;
-                    
-                    if (newWidth < 80) {
-                        this.audio.playSound('alert');
-                        this.showAlert('Warning: System performance below optimal levels');
-                    }
-                });
-            }
-
-            updateStardate() {
-                const stardateElement = document.querySelector('.stardate');
-                let stardate = parseFloat(stardateElement.textContent.split(' ')[1]);
-                stardate += 0.01;
-                stardateElement.textContent = `STARDATE ${stardate.toFixed(2)}`;
-            }
-
-            showAlert(message) {
-                // Implementation for showing alerts
-            }
-        }
-
-        // Navigation System
-        class Navigation {
-            constructor() {
-                this.audio = new AudioSystem();
-                this.initializeNavigation();
             }
 
             initializeNavigation() {
                 document.querySelectorAll('.nav-button').forEach(button => {
                     button.addEventListener('click', (e) => {
-                        this.audio.playSound('click');
-                        const page = e.target.dataset.page;
-                        if (page) this.showPage(page);
+                        const pageId = e.target.dataset.page;
+                        if (pageId) {
+                            this.navigateToPage(pageId);
+                            this.playSound('click');
+                        }
                     });
                 });
             }
 
-            showPage(pageId) {
+            navigateToPage(pageId) {
                 document.querySelectorAll('.content-section').forEach(section => {
                     section.classList.remove('active');
                 });
                 const targetPage = document.getElementById(pageId);
                 if (targetPage) targetPage.classList.add('active');
             }
+
+            startSystemUpdates() {
+                setInterval(() => this.updateSystems(), 3000);
+                setInterval(() => this.updateCoordinates(), 10000);
+            }
+
+            updateSystems() {
+                document.querySelectorAll('.status-bar-fill').forEach(bar => {
+                    const currentWidth = parseFloat(bar.style.width);
+                    const fluctuation = (Math.random() - 0.5) * 2;
+                    const newWidth = Math.max(75, Math.min(100, currentWidth + fluctuation));
+                    bar.style.width = `${newWidth}%`;
+                    
+                    if (newWidth < 80) {
+                        this.playSound('alert');
+                    }
+                });
+            }
+
+            updateCoordinates() {
+                const coords = document.querySelector('.coordinates');
+                const time = new Date();
+                coords.textContent = `[${time.getHours().toString().padStart(2, '0')}${time.getMinutes().toString().padStart(2, '0')}.${time.getSeconds().toString().padStart(2, '0')}] ◊ HC-59 358.29`;
+            }
         }
 
-        // Initialize Systems
+        // Initialize interface when DOM is loaded
         document.addEventListener('DOMContentLoaded', () => {
-            const shipSystems = new ShipSystems();
-            const navigation = new Navigation();
+            const interface = new Interface();
+
+            // Update active crew count periodically
+            setInterval(() => {
+                const crewCount = document.querySelector('.status-display .status-value');
+                if (crewCount) {
+                    const currentCount = parseInt(crewCount.textContent);
+                    const fluctuation = Math.random() > 0.5 ? 1 : -1;
+                    const newCount = Math.max(20, Math.min(30, currentCount + fluctuation));
+                    crewCount.textContent = newCount;
+                }
+            }, 30000);
+
+            // Dynamic shift changes
+            const shifts = ['ALPHA', 'BETA', 'GAMMA', 'DELTA'];
+            let currentShiftIndex = 0;
+            
+            setInterval(() => {
+                const shiftDisplay = document.querySelector('[class="status-title"]:contains("CURRENT SHIFT")');
+                if (shiftDisplay) {
+                    currentShiftIndex = (currentShiftIndex + 1) % shifts.length;
+                    shiftDisplay.nextElementSibling.textContent = shifts[currentShiftIndex];
+                    interface.playSound('click');
+                }
+            }, 28800000); // Change shift every 8 hours
+
+            // Add system alert functionality
+            function showSystemAlert(message, type = 'info') {
+                const alert = document.createElement('div');
+                alert.className = `system-alert ${type}`;
+                alert.textContent = message;
+                document.body.appendChild(alert);
+                
+                setTimeout(() => {
+                    alert.remove();
+                }, 3000);
+            }
+
+            // Random system notifications
+            const systemNotifications = [
+                'Long-range sensors detecting anomaly',
+                'Routine diagnostic scan complete',
+                'Communications array optimized',
+                'Environmental controls adjusted',
+                'Power distribution normalized',
+                'Shield harmonics synchronized'
+            ];
+
+            setInterval(() => {
+                if (Math.random() > 0.7) {
+                    const notification = systemNotifications[Math.floor(Math.random() * systemNotifications.length)];
+                    showSystemAlert(notification);
+                    interface.playSound('click');
+                }
+            }, 15000);
+
+            // Handle character creation form submissions
+            const characterForm = document.querySelector('#character-creation-form');
+            if (characterForm) {
+                characterForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    interface.playSound('click');
+                    showSystemAlert('Character application submitted for review', 'success');
+                });
+            }
+
+            // Add hover effects for interactive elements
+            document.querySelectorAll('.nav-button, .status-display').forEach(element => {
+                element.addEventListener('mouseenter', () => {
+                    interface.playSound('click');
+                });
+            });
+
+            // Initialize circular displays animation
+            document.querySelectorAll('.circular-display').forEach(display => {
+                const inner = display.querySelector('.circular-inner');
+                if (inner) {
+                    inner.style.transform = `rotate(${Math.random() * 360}deg)`;
+                }
+            });
+
+            // Add keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                if (e.ctrlKey) {
+                    switch(e.key) {
+                        case '1':
+                            interface.navigateToPage('missions');
+                            break;
+                        case '2':
+                            interface.navigateToPage('crew');
+                            break;
+                        case '3':
+                            interface.navigateToPage('characters');
+                            break;
+                        case '4':
+                            interface.navigateToPage('rules');
+                            break;
+                    }
+                }
+            });
         });
     </script>
 </body>
-</html>
+</html>               
