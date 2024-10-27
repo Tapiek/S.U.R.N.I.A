@@ -3,15 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>USS Surnia NX-2526 | Initialization</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>USS Surnia NX-2526 | Initializing</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary-blue: #00A6FB;
             --glow-blue: rgba(0, 166, 251, 0.3);
-            --dark-bg: #000819;
-            --text: #FFFFFF;
+            --background: #000819;
+            --text: #E1E1E1;
+            --console-green: #4AF626;
+            --error-red: #FF0033;
         }
 
         * {
@@ -21,320 +23,262 @@
         }
 
         body {
-            background: var(--dark-bg);
+            background: var(--background);
             color: var(--text);
-            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
+            min-height: 100vh;
             font-family: 'Share Tech Mono', monospace;
             overflow: hidden;
         }
 
         .initialization-container {
             text-align: center;
-            position: relative;
             width: 100%;
             max-width: 800px;
+            padding: 20px;
+            position: relative;
         }
 
         .logo-container {
-            position: relative;
             margin-bottom: 40px;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeInUp 1s ease forwards;
+            position: relative;
         }
 
         .surnia-logo {
             width: 300px;
             height: auto;
-            filter: drop-shadow(0 0 10px var(--glow-blue));
+            animation: logoFlash 4s infinite;
+            filter: drop-shadow(0 0 10px var(--primary-blue));
         }
 
-        .title-sequence {
-            margin: 30px 0;
-            font-size: 2em;
-            font-family: 'Orbitron', sans-serif;
-            letter-spacing: 10px;
-        }
-
-        .letter {
-            display: inline-block;
+        .glitch-effect {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 100%;
+            animation: glitchEffect 0.5s infinite;
             opacity: 0;
-            animation: flashIn 0.5s ease forwards;
-            text-shadow: 0 0 10px var(--primary-blue);
         }
 
-        .loading-container {
+        .progress-container {
             width: 80%;
             margin: 40px auto;
-            opacity: 0;
-            animation: fadeIn 1s ease forwards;
-            animation-delay: 3s;
+            position: relative;
         }
 
-        .loading-bar {
+        .progress-bar {
             height: 4px;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 2px;
             overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary-blue);
+            width: 0%;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 10px var(--primary-blue);
+        }
+
+        .console-container {
+            margin-top: 30px;
+            height: 60px; /* Height for 2 lines */
+            overflow: hidden;
+            text-align: left;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--primary-blue);
+            padding: 10px;
+            font-size: 14px;
             position: relative;
         }
 
-        .loading-progress {
-            width: 0%;
-            height: 100%;
-            background: var(--primary-blue);
-            position: absolute;
-            top: 0;
-            left: 0;
-            box-shadow: 0 0 10px var(--primary-blue);
-            transition: width 0.3s ease;
+        .console-text {
+            color: var(--console-green);
+            line-height: 1.5;
+            position: relative;
+            animation: scrollUp 0.5s linear infinite;
         }
 
-        .loading-text {
-            margin-top: 20px;
-            font-size: 1.2em;
-            opacity: 0.8;
+        .decrypt-character {
+            display: inline-block;
+            animation: decryptChar 0.1s infinite;
         }
 
-        .status-text {
-            height: 20px;
-            margin-top: 20px;
-            font-size: 0.9em;
-            opacity: 0.6;
+        @keyframes logoFlash {
+            0%, 100% { 
+                opacity: 1;
+                filter: drop-shadow(0 0 10px var(--primary-blue));
+            }
+            50% { 
+                opacity: 0.6;
+                filter: drop-shadow(0 0 5px var(--primary-blue));
+            }
+            75% {
+                opacity: 0.8;
+                filter: drop-shadow(0 0 15px var(--primary-blue));
+            }
         }
 
-        .initialization-steps {
-            margin-top: 30px;
-            text-align: left;
-            padding: 0 20px;
-            opacity: 0;
-            animation: fadeIn 1s ease forwards;
-            animation-delay: 3.5s;
+        @keyframes glitchEffect {
+            0% { 
+                opacity: 0;
+                transform: translateX(-50%) scale(1.02);
+            }
+            50% { 
+                opacity: 0.1;
+                transform: translateX(-49%) scale(0.98);
+            }
+            100% { 
+                opacity: 0;
+                transform: translateX(-50%) scale(1);
+            }
         }
 
-        .step {
-            margin: 10px 0;
-            opacity: 0;
-            transform: translateX(-20px);
+        @keyframes scrollUp {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-20px); }
         }
 
-        .step.active {
-            animation: slideIn 0.5s ease forwards;
+        @keyframes decryptChar {
+            0% { content: attr(data-value); }
+            25% { content: "×"; }
+            50% { content: "¥"; }
+            75% { content: "þ"; }
         }
 
         .scan-line {
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
+            width: 100%;
             height: 2px;
-            background: linear-gradient(90deg, transparent, var(--primary-blue), transparent);
-            animation: scan 3s linear infinite;
-            opacity: 0.5;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes flashIn {
-            0% {
-                opacity: 0;
-                transform: scale(1.5);
-            }
-            50% {
-                opacity: 0.5;
-                transform: scale(0.8);
-            }
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
+            background: linear-gradient(
+                90deg,
+                transparent,
+                var(--primary-blue),
+                transparent
+            );
+            animation: scan 2s linear infinite;
         }
 
         @keyframes scan {
-            0% { transform: translateY(-100vh); }
-            100% { transform: translateY(100vh); }
-        }
-
-        /* Glitch Effect */
-        .glitch {
-            position: relative;
-        }
-
-        .glitch::before,
-        .glitch::after {
-            content: attr(data-text);
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0.8;
-        }
-
-        .glitch::before {
-            color: #ff0000;
-            animation: glitch-1 2s infinite linear alternate-reverse;
-        }
-
-        .glitch::after {
-            color: #0000ff;
-            animation: glitch-2 2s infinite linear alternate-reverse;
-        }
-
-        @keyframes glitch-1 {
-            0% { transform: none; opacity: 0.8; }
-            7% { transform: translate(-2px, -2px); }
-            10% { transform: none; }
-            27% { transform: none; }
-            30% { transform: translate(2px, 2px); }
-            35% { transform: none; }
-            52% { transform: none; }
-            55% { transform: translate(-2px, 2px); }
-            50% { transform: none; }
-            72% { transform: none; }
-            75% { transform: translate(2px, -2px); }
-            80% { transform: none; }
-            100% { transform: none; }
-        }
-
-        @keyframes glitch-2 {
-            0% { transform: none; opacity: 0.8; }
-            7% { transform: translate(2px, 2px); }
-            10% { transform: none; }
-            27% { transform: none; }
-            30% { transform: translate(-2px, -2px); }
-            35% { transform: none; }
-            52% { transform: none; }
-            55% { transform: translate(2px, -2px); }
-            50% { transform: none; }
-            72% { transform: none; }
-            75% { transform: translate(-2px, 2px); }
-            80% { transform: none; }
-            100% { transform: none; }
+            0% { top: 0; }
+            100% { top: 100%; }
         }
     </style>
 </head>
 <body>
-    <div class="scan-line"></div>
     <div class="initialization-container">
         <div class="logo-container">
-            <img src="images/surnialogo.png" alt="SURNIA Logo" class="surnia-logo">
-        </div>
-        
-        <div class="title-sequence">
-            <span class="letter" style="animation-delay: 1.0s">S</span>
-            <span class="letter" style="animation-delay: 1.2s">U</span>
-            <span class="letter" style="animation-delay: 1.4s">R</span>
-            <span class="letter" style="animation-delay: 1.6s">N</span>
-            <span class="letter" style="animation-delay: 1.8s">I</span>
-            <span class="letter" style="animation-delay: 2.0s">A</span>
-        </div>
-
-        <div class="loading-container">
-            <div class="loading-bar">
-                <div class="loading-progress"></div>
+            <img src="/images/surnialogo.png" alt="SURNIA Logo" class="surnia-logo">
+            <div class="glitch-effect">
+                <img src="/images/surnialogo.png" alt="">
             </div>
-            <div class="loading-text">INITIALIZING SHIP SYSTEMS</div>
-            <div class="status-text"></div>
         </div>
 
-        <div class="initialization-steps">
-            <div class="step">► LOADING CORE PROTOCOLS...</div>
-            <div class="step">► ESTABLISHING SECURE CONNECTION...</div>
-            <div class="step">► ACCESSING SHIP DATABASE...</div>
-            <div class="step">► CALIBRATING NAVIGATION SYSTEMS...</div>
-            <div class="step">► ACTIVATING LIFE SUPPORT...</div>
-            <div class="step">► INITIALIZING MAIN COMPUTER...</div>
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+        </div>
+
+        <div class="console-container">
+            <div class="scan-line"></div>
+            <div class="console-text"></div>
         </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const progress = document.querySelector('.loading-progress');
-            const loadingText = document.querySelector('.loading-text');
-            const statusText = document.querySelector('.status-text');
-            const steps = document.querySelectorAll('.step');
+        class InitializationSequence {
+            constructor() {
+                this.consoleElement = document.querySelector('.console-text');
+                this.progressBar = document.querySelector('.progress-fill');
+                this.progress = 0;
+                this.consoleLines = [];
+                this.initializeSequence();
+            }
 
-            let currentProgress = 0;
-            let currentStep = 0;
+            initializeSequence() {
+                this.startProgress();
+                this.updateConsole();
+            }
 
-            // Simulated loading sequence
-            const loadingInterval = setInterval(() => {
-                currentProgress += Math.random() * 2;
-                if (currentProgress >= 100) {
-                    currentProgress = 100;
-                    clearInterval(loadingInterval);
-                    completeInitialization();
-                }
-                progress.style.width = `${currentProgress}%`;
-                
-                // Update steps
-                const stepIndex = Math.floor((currentProgress / 100) * steps.length);
-                if (stepIndex > currentStep && stepIndex < steps.length) {
-                    steps[stepIndex].classList.add('active');
-                    currentStep = stepIndex;
+            startProgress() {
+                const interval = setInterval(() => {
+                    this.progress += Math.random() * 2;
+                    if (this.progress >= 100) {
+                        this.progress = 100;
+                        clearInterval(interval);
+                        setTimeout(() => {
+                            window.location.href = 'main.html';
+                        }, 2000);
+                    }
+                    this.progressBar.style.width = `${this.progress}%`;
+                }, 100);
+            }
+
+            generateHexString(length) {
+                const hex = '0123456789ABCDEF';
+                return Array.from({length}, () => hex[Math.floor(Math.random() * 16)]).join('');
+            }
+
+            getRandomConsoleMessage() {
+                const messages = [
+                    `DECRYPTING SEQUENCE ${this.generateHexString(4)}...`,
+                    `BUFFER OVERFLOW CHECK: ${this.generateHexString(8)}`,
+                    `QUANTUM SIGNATURE: ${this.generateHexString(6)}`,
+                    `INITIALIZING CORE ${this.generateHexString(2)}...`,
+                    `SECURE CHANNEL: ${this.generateHexString(4)}-${this.generateHexString(4)}`,
+                    `ACCESSING NEURAL NET: ${this.generateHexString(6)}`,
+                    `SYNCHRONIZING NODES: ${this.generateHexString(4)}`,
+                    `CALCULATING VECTORS: ${this.generateHexString(8)}`,
+                    `PROCESSING DATA STREAM: ${this.generateHexString(6)}`,
+                    `ANALYZING PROTOCOLS: ${this.generateHexString(4)}`,
+                    `VERIFYING ENCRYPTION: ${this.generateHexString(8)}`,
+                    `CHECKING INTEGRITY: ${this.generateHexString(6)}`
+                ];
+                return messages[Math.floor(Math.random() * messages.length)];
+            }
+
+            updateConsole() {
+                setInterval(() => {
+                    // Add new message to array
+                    this.consoleLines.push(this.getRandomConsoleMessage());
                     
-                    // Play initialization sound
-                    playInitSound();
-                }
+                    // Keep only last 2 messages
+                    if (this.consoleLines.length > 2) {
+                        this.consoleLines.shift();
+                    }
 
-                // Update status text
-                statusText.textContent = `${Math.floor(currentProgress)}% COMPLETE`;
-            }, 100);
+                    // Update console display
+                    this.consoleElement.innerHTML = this.consoleLines
+                        .map(line => `<div>► ${line}</div>`)
+                        .join('');
 
-            function completeInitialization() {
-                loadingText.textContent = 'INITIALIZATION COMPLETE';
-                statusText.textContent = 'REDIRECTING TO MAIN INTERFACE...';
-                
-                setTimeout(() => {
-                    window.location.href = 'main.html';
-                }, 2000);
+                    // Add decryption effect to latest line
+                    const latestLine = this.consoleElement.lastElementChild;
+                    if (latestLine) {
+                        latestLine.style.color = '#4AF626';
+                        this.addDecryptionEffect(latestLine);
+                    }
+                }, 1000);
             }
 
-            function playInitSound() {
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-
-                oscillator.type = 'sine';
-                oscillator.frequency.setValueAtTime(1800, audioContext.currentTime);
-                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-
-                oscillator.start();
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-                setTimeout(() => oscillator.stop(), 100);
+            addDecryptionEffect(element) {
+                const text = element.textContent;
+                element.innerHTML = text
+                    .split('')
+                    .map(char => `<span class="decrypt-character">${char}</span>`)
+                    .join('');
             }
+        }
+
+        // Start initialization when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new InitializationSequence();
         });
     </script>
 </body>
