@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USS Surnia NX-2526 | Star Trek Roleplay</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0066cc;
+            --secondary: #00a8ff;
+            --accent: #ff9900;
+            --background: #000819;
+            --text: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        /* Header Styles */
+        .header {
+            background: linear-gradient(180deg, rgba(0,0,0,0.9) 0%, rgba(0,8,25,0.9) 100%);
+            padding: 1rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 168, 255, 0.2);
+        }
+
+        .nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            color: var(--secondary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo img {
+            height: 50px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            transition: color 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            color: var(--secondary);
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: url('/api/placeholder/1920/1080') center/cover no-repeat;
+            position: relative;
+            padding: 2rem;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            color: var(--secondary);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Sections */
+        .section {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section h2 {
+            color: var(--secondary);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        /* Cards */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 2rem 0;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 2rem;
+            transition: transform 0.3s;
+            border: 1px solid rgba(0, 168, 255, 0.2);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h3 {
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        /* Button */
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            background-color: var(--secondary);
+            color: var(--text);
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: var(--primary);
+        }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(0deg, rgba(0,0,0,0.9) 0%, rgba(0,8,25,0.9) 100%);
+            padding: 2rem;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .social-links a {
+            color: var(--text);
+            font-size: 1.5rem;
+            transition: color 0.3s;
+        }
+
+        .social-links a:hover {
+            color: var(--secondary);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 1s ease-out;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .section {
+                padding: 3rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <a href="#" class="logo">
+                <img src="/api/placeholder/50/50" alt="USS Surnia Logo">
+                USS Surnia NX-2526
+            </a>
+            <div class="nav-links">
+                <a href="#about">About</a>
+                <a href="#crew">Join the Crew</a>
+                <a href="#missions">Missions</a>
+                <a href="#contact">Contact</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-content fade-in">
+                <h1>USS Surnia NX-2526</h1>
+                <p>Explore the final frontier in this immersive Star Trek roleplaying experience. Join our crew and embark on exciting missions across the galaxy.</p>
+                <a href="#join" class="btn">Join the Adventure</a>
+            </div>
+        </section>
+
+        <section id="about" class="section">
+            <h2>About the Ship</h2>
+            <div class="cards">
+                <div class="card">
+                    <h3>Ship Specifications</h3>
+                    <p>The USS Surnia is an NX-class starship, designed for deep space exploration and scientific research. With state-of-the-art technology and a dedicated crew, we push the boundaries of known space.</p>
+                </div>
+                <div class="card">
+                    <h3>Mission Statement</h3>
+                    <p>Our primary mission is to explore strange new worlds, seek out new life and new civilizations, and boldly go where no one has gone before.</p>
+                </div>
+                <div class="card">
+                    <h3>Roleplay Setting</h3>
+                    <p>Set in the Star Trek universe, our Discord-based roleplay offers an immersive experience where every player contributes to the ongoing narrative of our adventures.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="crew" class="section">
+            <h2>Join the Crew</h2>
+            <div class="cards">
+                <div class="card">
+                    <h3>Available Positions</h3>
+                    <p>From command officers to engineering specialists, medical personnel to security teams, find your place among the stars.</p>
+                </div>
+                <div class="card">
+                    <h3>How to Join</h3>
+                    <p>Join our Discord server to begin your journey. New players are always welcome, and experienced members are ready to help you get started.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="social-links">
+            <a href="#"><i class="fab fa-discord"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-reddit"></i></a>
+        </div>
+        <p>&copy; 2024 USS Surnia NX-2526 Roleplay Community. Star Trek is a registered trademark.</p>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Intersection Observer for fade-in animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in');
+                }
+            });
+        });
+
+        document.querySelectorAll('.card').forEach((el) => observer.observe(el));
+    </script>
+</body>
+</html>
