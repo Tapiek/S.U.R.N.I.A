@@ -3,104 +3,163 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>USS Surnia NX-2526 | LCARS Initialization</title>
+    <title>USS Surnia NX-2526 | Initialization</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         :root {
-            --lcars-orange: #FF4D4D;
-            --lcars-blue: #00A6FB;
-            --lcars-gray: #404552;
-            --lcars-dark-gray: #2A2C33;
-            --background: #000000;
-            --text: #ffffff;
-        }
-
-        @font-face {
-            font-family: 'LCARS';
-            src: url('https://cdnjs.cloudflare.com/ajax/libs/webfont/1.6.28/webfontloader.js');
+            --primary-blue: #00A6FB;
+            --glow-blue: rgba(0, 166, 251, 0.3);
+            --dark-bg: #000819;
+            --text: #FFFFFF;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'LCARS', 'Arial', sans-serif;
         }
 
         body {
-            background-color: var(--background);
+            background: var(--dark-bg);
             color: var(--text);
-            height: 100vh;
-            overflow: hidden;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
+            font-family: 'Share Tech Mono', monospace;
+            overflow: hidden;
+        }
+
+        .initialization-container {
+            text-align: center;
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .logo-container {
+            position: relative;
+            margin-bottom: 40px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 1s ease forwards;
+        }
+
+        .surnia-logo {
+            width: 300px;
+            height: auto;
+            filter: drop-shadow(0 0 10px var(--glow-blue));
+        }
+
+        .title-sequence {
+            margin: 30px 0;
+            font-size: 2em;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 10px;
+        }
+
+        .letter {
+            display: inline-block;
+            opacity: 0;
+            animation: flashIn 0.5s ease forwards;
+            text-shadow: 0 0 10px var(--primary-blue);
         }
 
         .loading-container {
-            width: 100%;
-            max-width: 800px;
-            padding: 20px;
+            width: 80%;
+            margin: 40px auto;
+            opacity: 0;
+            animation: fadeIn 1s ease forwards;
+            animation-delay: 3s;
         }
 
-        .starfleet-logo {
-            width: 200px;
-            height: 200px;
-            margin: 0 auto 30px;
-            position: relative;
-        }
-
-        .starfleet-logo svg {
-            width: 100%;
-            height: 100%;
-            fill: var(--lcars-blue);
-            animation: pulseLogo 2s infinite;
-        }
-
-        @keyframes pulseLogo {
-            0% { opacity: 0.6; }
-            50% { opacity: 1; }
-            100% { opacity: 0.6; }
-        }
-
-        .progress-bar {
-            width: 100%;
+        .loading-bar {
             height: 4px;
-            background: var(--lcars-dark-gray);
-            margin: 20px 0;
-            position: relative;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
             overflow: hidden;
+            position: relative;
         }
 
-        .progress {
+        .loading-progress {
             width: 0%;
             height: 100%;
-            background: var(--lcars-blue);
+            background: var(--primary-blue);
             position: absolute;
-            animation: progress 5s linear;
+            top: 0;
+            left: 0;
+            box-shadow: 0 0 10px var(--primary-blue);
+            transition: width 0.3s ease;
         }
 
-        @keyframes progress {
-            0% { width: 0%; }
-            100% { width: 100%; }
-        }
-
-        .encryption-text {
-            font-family: monospace;
-            font-size: 14px;
-            color: var(--lcars-blue);
-            margin: 20px 0;
-            height: 200px;
-            overflow: hidden;
+        .loading-text {
+            margin-top: 20px;
+            font-size: 1.2em;
+            opacity: 0.8;
         }
 
         .status-text {
-            text-align: center;
-            color: var(--lcars-orange);
-            font-size: 24px;
-            margin: 20px 0;
+            height: 20px;
+            margin-top: 20px;
+            font-size: 0.9em;
+            opacity: 0.6;
+        }
+
+        .initialization-steps {
+            margin-top: 30px;
+            text-align: left;
+            padding: 0 20px;
             opacity: 0;
-            animation: fadeIn 0.5s forwards;
-            animation-delay: 4.5s;
+            animation: fadeIn 1s ease forwards;
+            animation-delay: 3.5s;
+        }
+
+        .step {
+            margin: 10px 0;
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+
+        .step.active {
+            animation: slideIn 0.5s ease forwards;
+        }
+
+        .scan-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary-blue), transparent);
+            animation: scan 3s linear infinite;
+            opacity: 0.5;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes flashIn {
+            0% {
+                opacity: 0;
+                transform: scale(1.5);
+            }
+            50% {
+                opacity: 0.5;
+                transform: scale(0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
 
         @keyframes fadeIn {
@@ -108,138 +167,175 @@
             to { opacity: 1; }
         }
 
-        .loading-complete {
-            display: none;
-            animation: fadeIn 1s forwards;
-        }
-
-        .decrypt-text {
-            overflow: hidden;
-            white-space: nowrap;
-            border-right: 2px solid var(--lcars-blue);
-            animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
-        }
-
-        @keyframes typing {
-            from { width: 0 }
-            to { width: 100% }
-        }
-
-        @keyframes blink-caret {
-            from, to { border-color: transparent }
-            50% { border-color: var(--lcars-blue) }
-        }
-
-        .scan-line {
-            position: absolute;
-            width: 100%;
-            height: 2px;
-            background: rgba(0, 166, 251, 0.5);
-            animation: scan 2s linear infinite;
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         @keyframes scan {
             0% { transform: translateY(-100vh); }
             100% { transform: translateY(100vh); }
         }
+
+        /* Glitch Effect */
+        .glitch {
+            position: relative;
+        }
+
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.8;
+        }
+
+        .glitch::before {
+            color: #ff0000;
+            animation: glitch-1 2s infinite linear alternate-reverse;
+        }
+
+        .glitch::after {
+            color: #0000ff;
+            animation: glitch-2 2s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-1 {
+            0% { transform: none; opacity: 0.8; }
+            7% { transform: translate(-2px, -2px); }
+            10% { transform: none; }
+            27% { transform: none; }
+            30% { transform: translate(2px, 2px); }
+            35% { transform: none; }
+            52% { transform: none; }
+            55% { transform: translate(-2px, 2px); }
+            50% { transform: none; }
+            72% { transform: none; }
+            75% { transform: translate(2px, -2px); }
+            80% { transform: none; }
+            100% { transform: none; }
+        }
+
+        @keyframes glitch-2 {
+            0% { transform: none; opacity: 0.8; }
+            7% { transform: translate(2px, 2px); }
+            10% { transform: none; }
+            27% { transform: none; }
+            30% { transform: translate(-2px, -2px); }
+            35% { transform: none; }
+            52% { transform: none; }
+            55% { transform: translate(2px, -2px); }
+            50% { transform: none; }
+            72% { transform: none; }
+            75% { transform: translate(-2px, 2px); }
+            80% { transform: none; }
+            100% { transform: none; }
+        }
     </style>
 </head>
 <body>
     <div class="scan-line"></div>
-    <div class="loading-container">
-        <div class="starfleet-logo">
-            <svg viewBox="0 0 100 100">
-                <path d="M50 5 L90 90 L50 70 L10 90 Z"/>
-            </svg>
+    <div class="initialization-container">
+        <div class="logo-container">
+            <img src="/images/surnialogo.png" alt="SURNIA Logo" class="surnia-logo">
         </div>
         
-        <div class="encryption-text"></div>
-        
-        <div class="progress-bar">
-            <div class="progress"></div>
+        <div class="title-sequence">
+            <span class="letter" style="animation-delay: 1.0s">S</span>
+            <span class="letter" style="animation-delay: 1.2s">U</span>
+            <span class="letter" style="animation-delay: 1.4s">R</span>
+            <span class="letter" style="animation-delay: 1.6s">N</span>
+            <span class="letter" style="animation-delay: 1.8s">I</span>
+            <span class="letter" style="animation-delay: 2.0s">A</span>
         </div>
-        
-        <div class="status-text">
-            <div class="decrypt-text">INITIALIZING USS SURNIA NX-2526 LCARS INTERFACE...</div>
+
+        <div class="loading-container">
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+            <div class="loading-text">INITIALIZING SHIP SYSTEMS</div>
+            <div class="status-text"></div>
+        </div>
+
+        <div class="initialization-steps">
+            <div class="step">► LOADING CORE PROTOCOLS...</div>
+            <div class="step">► ESTABLISHING SECURE CONNECTION...</div>
+            <div class="step">► ACCESSING SHIP DATABASE...</div>
+            <div class="step">► CALIBRATING NAVIGATION SYSTEMS...</div>
+            <div class="step">► ACTIVATING LIFE SUPPORT...</div>
+            <div class="step">► INITIALIZING MAIN COMPUTER...</div>
         </div>
     </div>
 
     <script>
-        const encryptionText = document.querySelector('.encryption-text');
-        const loadingContainer = document.querySelector('.loading-container');
-
-        // Generate random encryption characters
-        function generateEncryption() {
-            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%^&*()_+{}[]|:;<>,.?/~`';
-            let result = '';
-            for (let i = 0; i < 50; i++) {
-                result += characters.charAt(Math.floor(Math.random() * characters.length));
-            }
-            return result;
-        }
-
-        // Simulate encryption sequence
-        let encryptionInterval = setInterval(() => {
-            encryptionText.innerHTML += generateEncryption() + '\n';
-            encryptionText.scrollTop = encryptionText.scrollHeight;
-        }, 50);
-
-        // Simulate loading sequence
-        setTimeout(() => {
-            clearInterval(encryptionInterval);
-            
-            const loadingSteps = [
-                "INITIALIZING CORE SYSTEMS...",
-                "ESTABLISHING SECURE CONNECTION...",
-                "LOADING STARFLEET PROTOCOLS...",
-                "VERIFYING SECURITY CLEARANCE...",
-                "ACCESSING SHIP DATABASE...",
-                "CALIBRATING INTERFACE..."
-            ];
-
-            let currentStep = 0;
+        document.addEventListener('DOMContentLoaded', () => {
+            const progress = document.querySelector('.loading-progress');
+            const loadingText = document.querySelector('.loading-text');
             const statusText = document.querySelector('.status-text');
-            
-            const stepInterval = setInterval(() => {
-                if (currentStep < loadingSteps.length) {
-                    statusText.innerHTML = `<div class="decrypt-text">${loadingSteps[currentStep]}</div>`;
-                    currentStep++;
-                } else {
-                    clearInterval(stepInterval);
-                    // Redirect to main interface after loading
-                    setTimeout(() => {
-                        document.body.innerHTML = '<div style="color: var(--lcars-orange); font-size: 24px; text-align: center;">ACCESS GRANTED - REDIRECTING TO MAIN INTERFACE...</div>';
-                        setTimeout(() => {
-                            window.location.href = 'main.html';  // Redirect to your main LCARS interface
-                        }, 1500);
-                    }, 1000);
+            const steps = document.querySelectorAll('.step');
+
+            let currentProgress = 0;
+            let currentStep = 0;
+
+            // Simulated loading sequence
+            const loadingInterval = setInterval(() => {
+                currentProgress += Math.random() * 2;
+                if (currentProgress >= 100) {
+                    currentProgress = 100;
+                    clearInterval(loadingInterval);
+                    completeInitialization();
                 }
-            }, 800);
-        }, 4000);
+                progress.style.width = `${currentProgress}%`;
+                
+                // Update steps
+                const stepIndex = Math.floor((currentProgress / 100) * steps.length);
+                if (stepIndex > currentStep && stepIndex < steps.length) {
+                    steps[stepIndex].classList.add('active');
+                    currentStep = stepIndex;
+                    
+                    // Play initialization sound
+                    playInitSound();
+                }
 
-        // Add ambient sound effect
-        const playAmbientSound = () => {
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-            
-            oscillator.type = 'sine';
-            oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
-            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-            
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            
-            oscillator.start();
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 2);
-            
-            setTimeout(() => {
-                oscillator.stop();
-            }, 2000);
-        };
+                // Update status text
+                statusText.textContent = `${Math.floor(currentProgress)}% COMPLETE`;
+            }, 100);
 
-        // Play sound on user interaction
-        document.addEventListener('click', playAmbientSound);
+            function completeInitialization() {
+                loadingText.textContent = 'INITIALIZATION COMPLETE';
+                statusText.textContent = 'REDIRECTING TO MAIN INTERFACE...';
+                
+                setTimeout(() => {
+                    window.location.href = 'main.html';
+                }, 2000);
+            }
+
+            function playInitSound() {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(1800, audioContext.currentTime);
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+
+                oscillator.start();
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                setTimeout(() => oscillator.stop(), 100);
+            }
+        });
     </script>
 </body>
 </html>
