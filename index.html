@@ -8,12 +8,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
+            --primary-color: #aa4b46;
             --primary-blue: #00A6FB;
             --glow-blue: rgba(0, 166, 251, 0.3);
             --background: #000819;
             --text: #E1E1E1;
-            --console-green: #4AF626;
-            --error-red: #FF0033;
         }
 
         * {
@@ -79,34 +78,63 @@
 
         .progress-fill {
             height: 100%;
-            background: var(--primary-blue);
+            background: var(--primary-color);
             width: 0%;
             transition: width 0.3s ease;
-            box-shadow: 0 0 10px var(--primary-blue);
+            box-shadow: 0 0 10px var(--primary-color);
         }
 
         .console-container {
             margin-top: 30px;
-            height: 60px; /* Height for 2 lines */
+            height: 60px;
             overflow: hidden;
             text-align: left;
             background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--primary-blue);
+            border: 1px solid var(--primary-color);
             padding: 10px;
             font-size: 14px;
             position: relative;
         }
 
         .console-text {
-            color: var(--console-green);
+            color: var(--primary-color);
             line-height: 1.5;
             position: relative;
-            animation: scrollUp 0.5s linear infinite;
+            transition: transform 0.3s ease;
         }
 
-        .decrypt-character {
-            display: inline-block;
-            animation: decryptChar 0.1s infinite;
+        .console-line {
+            min-height: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .console-line.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .access-granted {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--background);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3em;
+            color: var(--primary-color);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .access-granted.visible {
+            opacity: 1;
         }
 
         @keyframes logoFlash {
@@ -139,18 +167,6 @@
             }
         }
 
-        @keyframes scrollUp {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-20px); }
-        }
-
-        @keyframes decryptChar {
-            0% { content: attr(data-value); }
-            25% { content: "×"; }
-            50% { content: "¥"; }
-            75% { content: "þ"; }
-        }
-
         .scan-line {
             position: absolute;
             width: 100%;
@@ -158,15 +174,21 @@
             background: linear-gradient(
                 90deg,
                 transparent,
-                var(--primary-blue),
+                var(--primary-color),
                 transparent
             );
+            opacity: 0.5;
             animation: scan 2s linear infinite;
         }
 
         @keyframes scan {
             0% { top: 0; }
             100% { top: 100%; }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
         }
     </style>
 </head>
@@ -187,98 +209,99 @@
 
         <div class="console-container">
             <div class="scan-line"></div>
-            <div class="console-text"></div>
+            <div class="console-text">
+                <div class="console-line"></div>
+                <div class="console-line"></div>
+            </div>
         </div>
     </div>
 
+    <div class="access-granted">ACCESS GRANTED</div>
+
     <script>
-        class InitializationSequence {
+        class ConsoleSimulator {
             constructor() {
                 this.consoleElement = document.querySelector('.console-text');
                 this.progressBar = document.querySelector('.progress-fill');
                 this.progress = 0;
-                this.consoleLines = [];
-                this.initializeSequence();
+                this.currentLine = 0;
+                this.isTyping = false;
+                
+                this.messages = [
+                    "INITIALIZING CORE SYSTEMS...",
+                    "ESTABLISHING SECURE CONNECTION...",
+                    "VERIFYING CREDENTIALS...",
+                    "DECRYPTING PROTOCOLS...",
+                    "ACCESSING MAIN DATABASE..."
+                ];
+
+                this.init();
             }
 
-            initializeSequence() {
+            init() {
                 this.startProgress();
-                this.updateConsole();
+                this.typeNextLine();
             }
 
             startProgress() {
                 const interval = setInterval(() => {
-                    this.progress += Math.random() * 2;
+                    this.progress += Math.random() * 3;
                     if (this.progress >= 100) {
                         this.progress = 100;
                         clearInterval(interval);
-                        setTimeout(() => {
-                            window.location.href = 'main.html';
-                        }, 2000);
+                        this.showAccessGranted();
                     }
                     this.progressBar.style.width = `${this.progress}%`;
                 }, 100);
             }
 
-            generateHexString(length) {
-                const hex = '0123456789ABCDEF';
-                return Array.from({length}, () => hex[Math.floor(Math.random() * 16)]).join('');
+            async typeNextLine() {
+                if (this.isTyping || this.progress >= 100) return;
+                
+                const lines = document.querySelectorAll('.console-line');
+                const currentLineElement = lines[this.currentLine % 2];
+                const nextLineElement = lines[(this.currentLine + 1) % 2];
+
+                currentLineElement.textContent = '';
+                currentLineElement.classList.add('visible');
+                
+                const message = this.messages[this.currentLine % this.messages.length];
+                this.isTyping = true;
+
+                for (let i = 0; i < message.length; i++) {
+                    if (this.progress >= 100) break;
+                    currentLineElement.textContent += message[i];
+                    await this.sleep(20 + Math.random() * 30);
+                }
+
+                this.isTyping = false;
+                this.currentLine++;
+
+                if (nextLineElement) {
+                    nextLineElement.classList.remove('visible');
+                }
+
+                if (this.progress < 100) {
+                    setTimeout(() => this.typeNextLine(), 500);
+                }
             }
 
-            getRandomConsoleMessage() {
-                const messages = [
-                    `DECRYPTING SEQUENCE ${this.generateHexString(4)}...`,
-                    `BUFFER OVERFLOW CHECK: ${this.generateHexString(8)}`,
-                    `QUANTUM SIGNATURE: ${this.generateHexString(6)}`,
-                    `INITIALIZING CORE ${this.generateHexString(2)}...`,
-                    `SECURE CHANNEL: ${this.generateHexString(4)}-${this.generateHexString(4)}`,
-                    `ACCESSING NEURAL NET: ${this.generateHexString(6)}`,
-                    `SYNCHRONIZING NODES: ${this.generateHexString(4)}`,
-                    `CALCULATING VECTORS: ${this.generateHexString(8)}`,
-                    `PROCESSING DATA STREAM: ${this.generateHexString(6)}`,
-                    `ANALYZING PROTOCOLS: ${this.generateHexString(4)}`,
-                    `VERIFYING ENCRYPTION: ${this.generateHexString(8)}`,
-                    `CHECKING INTEGRITY: ${this.generateHexString(6)}`
-                ];
-                return messages[Math.floor(Math.random() * messages.length)];
+            showAccessGranted() {
+                const accessGranted = document.querySelector('.access-granted');
+                accessGranted.classList.add('visible');
+                setTimeout(() => {
+                    window.location.href = 'main.html';
+                }, 1500);
             }
 
-            updateConsole() {
-                setInterval(() => {
-                    // Add new message to array
-                    this.consoleLines.push(this.getRandomConsoleMessage());
-                    
-                    // Keep only last 2 messages
-                    if (this.consoleLines.length > 2) {
-                        this.consoleLines.shift();
-                    }
-
-                    // Update console display
-                    this.consoleElement.innerHTML = this.consoleLines
-                        .map(line => `<div>► ${line}</div>`)
-                        .join('');
-
-                    // Add decryption effect to latest line
-                    const latestLine = this.consoleElement.lastElementChild;
-                    if (latestLine) {
-                        latestLine.style.color = '#4AF626';
-                        this.addDecryptionEffect(latestLine);
-                    }
-                }, 1000);
-            }
-
-            addDecryptionEffect(element) {
-                const text = element.textContent;
-                element.innerHTML = text
-                    .split('')
-                    .map(char => `<span class="decrypt-character">${char}</span>`)
-                    .join('');
+            sleep(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
             }
         }
 
-        // Start initialization when page loads
+        // Initialize when page loads
         document.addEventListener('DOMContentLoaded', () => {
-            new InitializationSequence();
+            new ConsoleSimulator();
         });
     </script>
 </body>
