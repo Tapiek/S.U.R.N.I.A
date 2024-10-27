@@ -3,614 +3,685 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>USS Surnia NX-2526 | LCARS Interface</title>
-    <!-- Include Orbitron and Chakra Petch fonts for futuristic look -->
+    <title>USS Surnia NX-2526 | Role-Play Community</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <!-- Include FontAwesome for icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
             --primary-blue: #00A6FB;
-            --secondary-blue: #0066cc;
-            --accent-orange: #FF4D4D;
-            --accent-yellow: #FFB74D;
-            --dark-bg: #000819;
+            --dark-blue: #003366;
+            --accent-coral: #FF6B6B;
+            --accent-orange: #FF9F1C;
+            --background: #000819;
             --panel-bg: #0A0F1F;
-            --text-primary: #FFFFFF;
-            --text-secondary: #B0B8C4;
-            --glow-blue: rgba(0, 166, 251, 0.3);
+            --text: #E1E1E1;
+            --glow: rgba(0, 166, 251, 0.3);
+            --warning: #FFD700;
+            --success: #4CAF50;
+            --error: #FF4444;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Chakra Petch', sans-serif;
-            cursor: default;
-            user-select: none;
         }
 
         body {
-            background: var(--dark-bg);
-            color: var(--text-primary);
+            background: var(--background);
+            color: var(--text);
+            font-family: 'Chakra Petch', sans-serif;
             min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--background);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .loading-logo {
+            width: 200px;
+            height: 200px;
+            border: 2px solid var(--primary-blue);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            animation: rotate 4s linear infinite;
+        }
+
+        .loading-progress {
+            width: 300px;
+            height: 4px;
+            background: var(--dark-blue);
+            border-radius: 2px;
             overflow: hidden;
         }
 
-        .lcars-header {
-            height: 60px;
-            background: var(--panel-bg);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 20px;
-            border-bottom: 2px solid var(--primary-blue);
-            font-family: 'Orbitron', sans-serif;
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background: var(--primary-blue);
+            transition: width 0.5s ease;
         }
 
-        .header-item {
+        /* Main Layout */
+        .interface-container {
+            display: grid;
+            grid-template-rows: 60px 1fr 80px;
+            min-height: 100vh;
+            padding: 20px;
+            gap: 20px;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        /* Header */
+        .header {
+            display: grid;
+            grid-template-columns: 300px 1fr 300px;
+            align-items: center;
+            gap: 20px;
+            padding: 10px 20px;
+            background: var(--panel-bg);
+            border-radius: 10px;
+            border: 1px solid var(--primary-blue);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary-blue), transparent);
+            animation: scan 3s linear infinite;
+        }
+
+        /* Navigation */
+        .nav-section {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .nav-item {
+            padding: 8px 16px;
+            background: var(--dark-blue);
+            border: none;
+            border-radius: 5px;
+            color: var(--text);
+            font-family: 'Orbitron', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-item::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--primary-blue);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .nav-item:hover::after {
+            transform: scaleX(1);
+        }
+
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 250px 1fr 250px;
+            gap: 20px;
+        }
+
+        .side-panel {
+            background: var(--panel-bg);
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid var(--primary-blue);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .central-display {
+            background: var(--panel-bg);
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid var(--primary-blue);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Dynamic Content */
+        .content-section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .content-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Status Displays */
+        .status-display {
             display: flex;
             align-items: center;
             gap: 10px;
-        }
-
-        .stardate {
-            color: var(--accent-orange);
-            font-size: 1.2em;
-            letter-spacing: 2px;
-            animation: pulse 2s infinite;
-        }
-
-        .main-container {
-            display: grid;
-            grid-template-columns: 300px 1fr 100px;
-            height: calc(100vh - 60px);
-            gap: 2px;
-        }
-
-        .left-panel {
-            background: var(--panel-bg);
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            border-right: 1px solid var(--primary-blue);
-        }
-
-        .system-status {
-            font-family: 'Orbitron', sans-serif;
-            color: var(--accent-orange);
-            font-size: 24px;
-            text-align: center;
-            margin-bottom: 20px;
-            position: relative;
+            padding: 10px;
+            background: rgba(0, 166, 251, 0.1);
+            border-radius: 5px;
+            font-family: 'Share Tech Mono', monospace;
         }
 
         .status-indicator {
             width: 10px;
             height: 10px;
-            background: var(--accent-orange);
             border-radius: 50%;
-            display: inline-block;
-            margin-right: 10px;
-            animation: blink 1s infinite;
-        }
-
-        .status-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-        }
-
-        .status-box {
-            background: rgba(0, 166, 251, 0.1);
-            padding: 15px;
-            border-radius: 5px;
-            border: 1px solid var(--primary-blue);
-            transition: all 0.3s ease;
-        }
-
-        .status-box:hover {
-            transform: scale(1.02);
-            box-shadow: 0 0 15px var(--glow-blue);
-        }
-
-        .circular-display {
-            width: 150px;
-            height: 150px;
-            margin: 20px auto;
-            position: relative;
-            border-radius: 50%;
-            background: 
-                radial-gradient(circle at center, 
-                    var(--primary-blue) 0%, 
-                    transparent 70%);
-            border: 2px solid var(--primary-blue);
-            animation: rotate 10s linear infinite;
-        }
-
-        .main-content {
-            background: var(--panel-bg);
-            position: relative;
-            overflow: hidden;
-            padding: 20px;
-        }
-
-        .grid-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: 
-                linear-gradient(var(--glow-blue) 1px, transparent 1px),
-                linear-gradient(90deg, var(--glow-blue) 1px, transparent 1px);
-            background-size: 50px 50px;
-            opacity: 0.1;
-            pointer-events: none;
-        }
-
-        .content-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .info-card {
-            background: rgba(0, 166, 251, 0.05);
-            border: 1px solid var(--primary-blue);
-            border-radius: 5px;
-            padding: 15px;
-            transition: all 0.3s ease;
-        }
-
-        .info-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px var(--glow-blue);
-        }
-
-        .info-card h3 {
-            color: var(--accent-yellow);
-            font-family: 'Orbitron', sans-serif;
-            margin-bottom: 10px;
-            font-size: 0.9em;
-        }
-
-        .right-panel {
-            background: var(--panel-bg);
-            padding: 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            border-left: 1px solid var(--primary-blue);
-        }
-
-        .control-button {
-            height: 40px;
-            background: var(--primary-blue);
-            border-radius: 5px;
-            transition: all 0.3s ease;
-        }
-
-        .control-button:hover {
-            background: var(--accent-orange);
-            transform: translateX(-5px);
-        }
-
-        .scan-line {
-            position: absolute;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(
-                90deg,
-                transparent,
-                var(--primary-blue),
-                transparent
-            );
-            animation: scan 2s linear infinite;
+            background: var(--success);
+            animation: pulse 2s infinite;
         }
 
         /* Animations */
-        @keyframes scan {
-            0% { transform: translateY(-100%); }
-            100% { transform: translateY(100%); }
-        }
-
-        @keyframes pulse {
-            0% { opacity: 0.6; }
-            50% { opacity: 1; }
-            100% { opacity: 0.6; }
-        }
-
         @keyframes rotate {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
 
-        @keyframes blink {
-            0% { opacity: 0.2; }
-            50% { opacity: 1; }
-            100% { opacity: 0.2; }
+        @keyframes pulse {
+            0% { opacity: 0.5; transform: scale(0.95); }
+            50% { opacity: 1; transform: scale(1.05); }
+            100% { opacity: 0.5; transform: scale(0.95); }
         }
 
-        .alert {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: var(--accent-orange);
+        @keyframes scan {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        /* Role Availability Display */
+        .role-availability {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .role-card {
+            background: rgba(0, 166, 251, 0.1);
             padding: 15px;
-            border-radius: 5px;
-            display: none;
-            animation: slideIn 0.3s ease forwards;
+            border-radius: 8px;
+            border: 1px solid var(--primary-blue);
+            transition: all 0.3s ease;
         }
 
-        @keyframes slideIn {
-            from { transform: translateX(100%); }
-            to { transform: translateX(0); }
+        .role-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 166, 251, 0.2);
+        }
+
+        /* Character Creation Form */
+        .character-form {
+            display: none;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background: rgba(0, 166, 251, 0.1);
+            border-radius: 10px;
+            border: 1px solid var(--primary-blue);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--primary-blue);
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 8px;
+            background: var(--panel-bg);
+            border: 1px solid var(--primary-blue);
+            border-radius: 4px;
+            color: var(--text);
+            font-family: 'Chakra Petch', sans-serif;
+        }
+
+        /* Mission Logs */
+        .mission-log {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(0, 166, 251, 0.1);
+            border-radius: 8px;
+            border: 1px solid var(--primary-blue);
+        }
+
+        .mission-log h3 {
+            color: var(--accent-coral);
+            font-family: 'Orbitron', sans-serif;
+            margin-bottom: 10px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .side-panel {
+                display: none;
+            }
+            
+            .nav-section {
+                flex-wrap: wrap;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="lcars-header">
-        <div class="header-item">
-            <span class="stardate">STARDATE 47634.44</span>
+    <!-- Loading Screen -->
+    <div class="loading-screen">
+        <div class="loading-logo">USS SURNIA</div>
+        <div class="loading-progress">
+            <div class="progress-bar"></div>
         </div>
-        <div class="header-item">
-            <span style="font-size: 1.2em; letter-spacing: 2px;">USS SURNIA NX-2526</span>
-        </div>
-        <div class="header-item">
-            <span class="status-indicator"></span>
-            <span>SYSTEM READY</span>
-        </div>
+        <div class="loading-text">INITIALIZING SYSTEMS...</div>
     </div>
 
-    <div class="main-container">
-        <div class="left-panel">
-            <div class="system-status">
-                SYSTEM STATUS
-            </div>
-            <div class="status-grid">
-                <div class="status-box" data-system="warp">
-                    <h3>WARP CORE</h3>
-                    <p class="value">98.3%</p>
-                </div>
-                <div class="status-box" data-system="shields">
-                    <h3>SHIELDS</h3>
-                    <p class="value">100%</p>
-                </div>
-                <div class="status-box" data-system="power">
-                    <h3>POWER</h3>
-                    <p class="value">87.5%</p>
-                </div>
-                <div class="status-box" data-system="life">
-                    <h3>LIFE SUPPORT</h3>
-                    <p class="value">99.9%</p>
-                </div>
-            </div>
-            <div class="circular-display"></div>
-        </div>
+    <!-- Main Interface -->
+    <div class="interface-container">
+        <header class="header">
+            <div class="ship-identifier">USS SURNIA NX-2526</div>
+            <nav class="nav-section">
+                <button class="nav-item" data-page="home">HOME</button>
+                <button class="nav-item" data-page="missions">MISSIONS</button>
+                <button class="nav-item" data-page="crew">CREW</button>
+                <button class="nav-item" data-page="characters">CHARACTERS</button>
+                <button class="nav-item" data-page="rules">RULES</button>
+            </nav>
+            <div class="stardate">STARDATE 47634.44</div>
+        </header>
 
-        <div class="main-content">
-            <div class="grid-overlay"></div>
-            <div class="scan-line"></div>
-            <div class="content-grid">
-                <!-- Dynamic content will be inserted here by JavaScript -->
-            </div>
-        </div>
+        <main class="main-content">
+            <aside class="side-panel">
+                <div class="status-display">
+                    <div class="status-indicator"></div>
+                    <span>ACTIVE CREW: 24</span>
+                </div>
+                <div class="status-display">
+                    <div class="status-indicator"></div>
+                    <span>CURRENT MISSION: 3</span>
+                </div>
+                <div class="status-display">
+                    <div class="status-indicator"></div>
+                    <span>SHIFT: ALPHA</span>
+                </div>
+            </aside>
 
-        <div class="right-panel">
-            <div class="control-button" data-action="scan"></div>
-            <div class="control-button" data-action="shields"></div>
-            <div class="control-button" data-action="weapons"></div>
-            <div class="control-button" data-action="comms"></div>
-            <div class="control-button" data-action="sensors"></div>
-        </div>
+            <section class="central-display">
+                <div id="home" class="content-section visible">
+                    <h2>WELCOME TO THE USS SURNIA</h2>
+                    <p>Join our growing community of role-players aboard the USS Surnia NX-2526. 
+                       Explore strange new worlds, seek out new life and new civilizations, and boldly go 
+                       where no one has gone before.</p>
+                    
+                    <div class="role-availability">
+                        <div class="role-card">
+                            <h3>COMMAND</h3>
+                            <p>Available Positions: 2</p>
+                        </div>
+                        <div class="role-card">
+                            <h3>SCIENCE</h3>
+                            <p>Available Positions: 3</p>
+                        </div>
+                        <div class="role-card">
+                            <h3>ENGINEERING</h3>
+                            <p>Available Positions: 1</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="missions" class="content-section">
+                    <h2>CURRENT MISSIONS</h2>
+                    <div class="mission-log">
+                        <h3>THE ANOMALY</h3>
+                        <p>Status: In Progress</p>
+                        <p>The USS Surnia investigates a mysterious spatial anomaly in the Gamma Quadrant...</p>
+                    </div>
+                </div>
+
+                <div id="characters" class="content-section">
+                    <h2>CHARACTER CREATION</h2>
+                    <form class="character-form">
+                        <div class="form-group">
+                            <label>Character Name</label>
+                            <input type="text" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Species</label>
+                            <select required>
+                                <option>Human</option>
+                                <option>Vulcan</option>
+                                <option>Andorian</option>
+                                <option>Tellarite</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Department</label>
+                            <select required>
+                                <option>Command</option>
+                                <option>Science</option>
+                                <option>Engineering</option>
+                                <option>Medical</option>
+                                <option>Security</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Background</label>
+                            <textarea rows="4"></textarea>
+                        </div>
+                        <button type="submit" class="nav-item">SUBMIT</button>
+                    </form>
+                </div>
+            </section>
+
+            <aside class="side-panel">
+                <div class="status-display">
+                    <div class="status-indicator"></div>
+                    <span>DISCORD ONLINE: 12</span>
+                </div>
+                <div class="status-display">
+                    <div class="status-indicator"></div>
+                    <span>PENDING APPS: 3</span>
+                </div>
+                <a href="https://discord.gg/your-invite" target="_blank" 
+                   class="nav-item" style="text-align: center; text-decoration: none;">
+                    JOIN DISCORD
+                </a>
+            </aside>
+        </main>
     </div>
-
-    <div class="alert"></div>
 
     <script>
-        // Content data
-        const shipSystems = [
-            {
-                title: "NAVIGATION",
-                content: "Course: 147 mark 32\nVelocity: Warp 5.2",
-                updates: ["Course adjusted", "Speed increased", "Entering sector 31"]
-            },
-            {
-                title: "TACTICAL",
-                content: "Weapons: Online\nShields: 100%",
-                updates: ["Shields at maximum", "Phasers charged", "Photon torpedoes ready"]
-            },
-            {
-                title: "ENGINEERING",
-                content: "Warp core: Stable\nPower output: Nominal",
-                updates: ["Core temperature normal", "Matter/Antimatter flow stable", "EPS grid optimal"]
-            },
-            {
-                title: "ENVIRONMENTAL",
-                content: "Life support: Normal\nAtmosphere: Standard",
-                updates: ["O2 levels normal", "Gravity plating functional", "Temperature regulated"]
-            },
-            {
-                title: "CREW STATUS",
-                content: "Personnel: 87/100\nShift: Alpha",
-                updates: ["Medical bay: Clear", "Security: Alert", "Engineering: Nominal"]
-            },
-            {
-                title: "MISSION LOG",
-                content: "Current: Deep Space Exploration\nSector: Beta Quadrant",
-                updates: ["Log updated", "New coordinates received", "Mission parameters adjusted"]
-            }
-        ];
+        // Loading sequence
+        document.addEventListener('DOMContentLoaded', () => {
+            const progress = document.querySelector('.progress-bar');
+            const loadingText = document.querySelector('.loading-text');
+            const interface = document.querySelector('.interface-container');
+            const loadingScreen = document.querySelector('.loading-screen');
 
-        // Initialize content
-        function initializeContent() {
-            const contentGrid = document.querySelector('.content-grid');
-            shipSystems.forEach(system => {
-                const card = document.createElement('div');
-                card.className = 'info-card';
-                card.innerHTML = `
-                    <h3>${system.title}</h3>
-                    <p>${system.content.replace('\n', '<br>')}</p>
-                `;
-                contentGrid.appendChild(card);
-            });
+            const loadingMessages = [
+                'INITIALIZING SYSTEMS...',
+                'ESTABLISHING SECURE CONNECTION...',
+                'LOADING SHIP DATABASE...',
+                'CALIBRATING INTERFACE...',
+                'ACCESSING CREW MANIFEST...',
+                'SYSTEM READY'
+            ];
+
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    completeLoading();
+                }
+                progressBar.style.width = `${progress}%`;
+                loadingText.textContent = loadingMessages[Math.floor((progress/100) * loadingMessages.length)];
+            }, 500);
+
+            function completeLoading() {
+                setTimeout(() => {
+                    loadingScreen.style.opacity = '0';
+                    interface.style.opacity = '1';
+                    setTimeout(() => {
+                        loadingScreen.style.display = 'none';
+                    }, 1000);
+                }, 500);
+            }
+        });
+
+        // Audio feedback system
+        class AudioFeedback {
+            constructor() {
+                this.context = new (window.AudioContext || window.webkitAudioContext)();
+            }
+
+            playUISound(type) {
+                const oscillator = this.context.createOscillator();
+                const gainNode = this.context.createGain();
+
+                oscillator.connect(gainNode);
+                gainNode.connect(this.context.destination);
+
+                switch(type) {
+                    case 'click':
+                        oscillator.frequency.setValueAtTime(1800, this.context.currentTime);
+                        gainNode.gain.setValueAtTime(0.1, this.context.currentTime);
+                        oscillator.start();
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, this.context.currentTime + 0.1);
+                        setTimeout(() => oscillator.stop(), 100);
+                        break;
+                    case 'alert':
+                        oscillator.frequency.setValueAtTime(440, this.context.currentTime);
+                        gainNode.gain.setValueAtTime(0.2, this.context.currentTime);
+                        oscillator.start();
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, this.context.currentTime + 0.5);
+                        setTimeout(() => oscillator.stop(), 500);
+                        break;
+                }
+            }
         }
 
+        const audio = new AudioFeedback();
+
+        // Navigation System
+        class NavigationSystem {
+            constructor() {
+                this.pages = document.querySelectorAll('.content-section');
+                this.navButtons = document.querySelectorAll('.nav-item');
+                this.initializeNavigation();
+            }
+
+            initializeNavigation() {
+                this.navButtons.forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const targetPage = e.target.dataset.page;
+                        this.navigateToPage(targetPage);
+                        audio.playUISound('click');
+                    });
+                });
+            }
+
+            navigateToPage(pageId) {
+                this.pages.forEach(page => {
+                    if (page.id === pageId) {
+                        page.classList.add('visible');
+                    } else {
+                        page.classList.remove('visible');
+                    }
+                });
+            }
+        }
+
+        // Ship Systems Monitor
+        class ShipSystemsMonitor {
+            constructor() {
+                this.systems = {
+                    warpCore: { status: 'nominal', value: 98.3 },
+                    shields: { status: 'nominal', value: 100 },
+                    lifeSuppport: { status: 'nominal', value: 99.9 },
+                    power: { status: 'nominal', value: 87.5 }
+                };
+                this.startMonitoring();
+            }
+
+            startMonitoring() {
+                setInterval(() => {
+                    this.updateSystems();
+                }, 3000);
+            }
+
+            updateSystems() {
+                Object.keys(this.systems).forEach(system => {
+                    const fluctuation = (Math.random() - 0.5) * 2;
+                    this.systems[system].value = Math.max(75, Math.min(100, this.systems[system].value + fluctuation));
+                    this.updateDisplay(system);
+                });
+            }
+
+            updateDisplay(system) {
+                const display = document.querySelector(`[data-system="${system}"] .value`);
+                if (display) {
+                    display.textContent = `${this.systems[system].value.toFixed(1)}%`;
+                    if (this.systems[system].value < 80) {
+                        audio.playUISound('alert');
+                        this.triggerAlert(`Warning: ${system} operating below optimal levels`);
+                    }
+                }
+            }
+
+            triggerAlert(message) {
+                const alert = document.createElement('div');
+                alert.className = 'system-alert';
+                alert.textContent = message;
+                document.body.appendChild(alert);
+                setTimeout(() => alert.remove(), 3000);
+            }
+        }
+
+        // Character Creation System
+        class CharacterSystem {
+            constructor() {
+                this.form = document.querySelector('.character-form');
+                this.initializeForm();
+            }
+
+            initializeForm() {
+                this.form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.handleSubmission(e.target);
+                });
+            }
+
+            handleSubmission(form) {
+                const formData = new FormData(form);
+                const character = Object.fromEntries(formData.entries());
+                
+                // Validate character data
+                if (this.validateCharacter(character)) {
+                    this.saveCharacter(character);
+                    audio.playUISound('click');
+                    form.reset();
+                }
+            }
+
+            validateCharacter(character) {
+                // Add validation rules here
+                return true;
+            }
+
+            saveCharacter(character) {
+                // Save character data (would connect to backend)
+                console.log('Character saved:', character);
+            }
+        }
+
+        // Mission Log System
+        class MissionLogSystem {
+            constructor() {
+                this.missions = [];
+                this.initializeMissionLogs();
+            }
+
+            initializeMissionLogs() {
+                // Fetch and display mission logs
+                this.missions = [
+                    {
+                        title: 'THE ANOMALY',
+                        status: 'In Progress',
+                        description: 'The USS Surnia investigates a mysterious spatial anomaly...',
+                        stardate: '47634.44'
+                    }
+                    // Add more missions
+                ];
+                this.displayMissions();
+            }
+
+            displayMissions() {
+                const missionContainer = document.querySelector('#missions');
+                missionContainer.innerHTML = this.missions.map(mission => `
+                    <div class="mission-log">
+                        <h3>${mission.title}</h3>
+                        <p>Status: ${mission.status}</p>
+                        <p>${mission.description}</p>
+                        <p>Stardate: ${mission.stardate}</p>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Initialize all systems
+        const navigation = new NavigationSystem();
+        const shipSystems = new ShipSystemsMonitor();
+        const characterSystem = new CharacterSystem();
+        const missionLogs = new MissionLogSystem();
+
         // Update stardate
-        function updateStardate() {
+        setInterval(() => {
             const stardateElement = document.querySelector('.stardate');
             let currentStardate = parseFloat(stardateElement.textContent.split(' ')[1]);
             currentStardate += 0.01;
             stardateElement.textContent = `STARDATE ${currentStardate.toFixed(2)}`;
+        }, 10000);
+
+        // Add ambient sound effects
+        function playAmbientSound() {
+            const freq = Math.random() * 1000 + 500;
+            audio.playUISound('ambient', freq);
         }
 
-        // System status updates
-        function updateSystemStatus() {
-            document.querySelectorAll('.status-box .value').forEach(element => {
-                const currentValue = parseFloat(element.textContent);
-                const newValue = Math.max(75, Math.min(100, currentValue + (Math.random() - 0.5) * 5));
-                element.textContent = `${newValue.toFixed(1)}%`;
-            });
+        // Initialize Discord status simulation
+        function updateDiscordStatus() {
+            const onlineCount = Math.floor(Math.random() * 10) + 5;
+            document.querySelector('[data-status="discord"]').textContent = `DISCORD ONLINE: ${onlineCount}`;
         }
 
-        // Show alert
-        function showAlert(message) {
-            const alert = document.querySelector('.alert');
-            alert.textContent = message;
-            alert.style.display = 'block';
-            setTimeout(() => {
-                alert.style.display = 'none';
-            }, 3000);
-        }
-
-        // Random system updates
-        function randomSystemUpdate() {
-            const system = shipSystems[Math.floor(Math.random() * shipSystems.length)];
-            const update = system.updates[Math.floor(Math.random() * system.updates.length)];
-            showAlert(`${system.title}: ${update}`);
-        }
-
-        // Initialize and start updates
-        initializeContent();
-        setInterval(updateStardate, 10000);
-        setInterval(updateSystemStatus, 3000);
-        setInterval(randomSystemUpdate, 5000);
-
-        // Add click handlers for control buttons
-        document.querySelectorAll('.control-button').forEach(button => {
-            button.addEventListener('click', () => {
-                const action = button.dataset.action;
-                showAlert(`${action.toUpperCase()} SYSTEMS ACTIVATED`);
-                
-                // Play LCARS beep sound
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                
-                oscillator.type = 'sine';
-                oscillator.frequency.setValueAtTime(1800, audioContext.currentTime);
-                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-                
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                
-                oscillator.start();
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-                setTimeout(() => oscillator.stop(), 100);
-            });
-        });
-
-        // Add hover effect sound for status boxes
-        document.querySelectorAll('.status-box').forEach(box => {
-        box.addEventListener('mouseenter', () => {
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-            
-            oscillator.type = 'sine';
-            oscillator.frequency.setValueAtTime(1200, audioContext.currentTime);
-            gainNode.gain.setValueAtTime(0.05, audioContext.currentTime);
-            
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            
-            oscillator.start();
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.05);
-            setTimeout(() => oscillator.stop(), 50);
-        });
-    });
-
-    // Dynamic content updates
-    class ShipSystemsMonitor {
-        constructor() {
-            this.alertLevel = 'normal';
-            this.systemStatuses = new Map();
-            this.initializeSystemStatuses();
-        }
-
-        initializeSystemStatuses() {
-            ['warp', 'shields', 'power', 'life'].forEach(system => {
-                this.systemStatuses.set(system, {
-                    status: 'nominal',
-                    value: 100,
-                    alerts: []
-                });
-            });
-        }
-
-        updateSystem(system, value, status = 'nominal') {
-            const currentStatus = this.systemStatuses.get(system);
-            currentStatus.value = value;
-            currentStatus.status = status;
-            this.updateDisplay(system);
-        }
-
-        updateDisplay(system) {
-            const statusBox = document.querySelector(`[data-system="${system}"] .value`);
-            if (statusBox) {
-                statusBox.textContent = `${this.systemStatuses.get(system).value.toFixed(1)}%`;
-                this.checkAlertStatus(system);
-            }
-        }
-
-        checkAlertStatus(system) {
-            const status = this.systemStatuses.get(system);
-            if (status.value < 80) {
-                this.triggerAlert(`Warning: ${system.toUpperCase()} system below optimal levels`);
-            }
-        }
-
-        triggerAlert(message) {
-            showAlert(message);
-            this.playAlertSound();
-        }
-
-        playAlertSound() {
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-            
-            oscillator.type = 'square';
-            oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
-            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-            
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            
-            oscillator.start();
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-            setTimeout(() => oscillator.stop(), 500);
-        }
-    }
-
-    // Initialize ship systems monitor
-    const shipMonitor = new ShipSystemsMonitor();
-
-    // Simulated ship events
-    const shipEvents = [
-        "Quantum fluctuation detected in sector 31",
-        "Subspace anomaly detected",
-        "Incoming transmission",
-        "Long-range sensors detect vessel",
-        "Minor power fluctuation in EPS grid",
-        "Routine diagnostic complete",
-        "Course correction calculated",
-        "Atmospheric processors optimized"
-    ];
-
-    function simulateShipEvent() {
-        const event = shipEvents[Math.floor(Math.random() * shipEvents.length)];
-        showAlert(event);
-    }
-
-    // Create dynamic particle effect in main content
-    function createParticleEffect() {
-        const mainContent = document.querySelector('.main-content');
-        const particle = document.createElement('div');
-        particle.style.cssText = `
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            background: var(--primary-blue);
-            border-radius: 50%;
-            pointer-events: none;
-            opacity: 0;
-            transition: all 2s linear;
-        `;
-        
-        const x = Math.random() * 100;
-        const y = Math.random() * 100;
-        
-        particle.style.left = `${x}%`;
-        particle.style.top = `${y}%`;
-        
-        mainContent.appendChild(particle);
-        
-        requestAnimationFrame(() => {
-            particle.style.opacity = '0.5';
-            particle.style.transform = `translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px)`;
-        });
-        
-        setTimeout(() => particle.remove(), 2000);
-    }
-
-    // Simulate system fluctuations
-    function simulateSystemFluctuations() {
-        ['warp', 'shields', 'power', 'life'].forEach(system => {
-            const currentValue = parseFloat(document.querySelector(`[data-system="${system}"] .value`).textContent);
-            const fluctuation = (Math.random() - 0.5) * 5;
-            const newValue = Math.max(75, Math.min(100, currentValue + fluctuation));
-            shipMonitor.updateSystem(system, newValue);
-        });
-    }
-
-    // Initialize all dynamic elements
-    function initializeDynamicElements() {
-        // Update particles
-        setInterval(createParticleEffect, 1000);
-        
-        // Simulate ship events
-        setInterval(simulateShipEvent, 15000);
-        
-        // Update system fluctuations
-        setInterval(simulateSystemFluctuations, 3000);
-        
-        // Add interactive elements
-        document.querySelectorAll('.info-card').forEach(card => {
-            card.addEventListener('click', () => {
-                card.style.transform = 'scale(1.05)';
-                setTimeout(() => card.style.transform = '', 200);
-            });
-        });
-    }
-
-    // Initialize everything
-    document.addEventListener('DOMContentLoaded', () => {
-        initializeContent();
-        initializeDynamicElements();
-    });
-
-    // Add keypress commands
-    document.addEventListener('keypress', (e) => {
-        switch(e.key.toLowerCase()) {
-            case 'r':
-                showAlert('Initiating system scan...');
-                break;
-            case 's':
-                showAlert('Shield status: Active');
-                break;
-            case 'w':
-                showAlert('Weapons systems: Standing by');
-                break;
-            case 'c':
-                showAlert('Communications channel open');
-                break;
-        }
-    });
-</script>
-</html>
+        setInterval(updateDiscordStatus, 30000);
+        setInterval(playAmbientSound, 10000);
+    </script>
