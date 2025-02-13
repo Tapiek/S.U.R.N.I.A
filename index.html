@@ -1,279 +1,338 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>USS Surnia NX-2526 | Initializing</title>
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary-color: #aa4b46;
-            --background: #000819;
-            --text: #E1E1E1;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background: var(--background);
-            color: var(--text);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            font-family: 'Share Tech Mono', monospace;
-            overflow: hidden;
-        }
-
-        .initialization-container {
-            text-align: center;
-            width: 100%;
-            max-width: 800px;
-            padding: 20px;
-            position: relative;
-        }
-
-        .logo-container {
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        .surnia-logo {
-            width: 450px;
-            height: auto;
-            animation: logoFlash 3.5s infinite;
-            filter: drop-shadow(0 0 30px var(--primary-color));
-        }
-
-        .accessing-text {
-            font-family: 'Orbitron', sans-serif;
-            color: var(--primary-color);
-            font-size: 1.2em;
-            margin-top: 10px;
-            opacity: 0.8;
-            animation: logoFlash 1s infinite;
-            text-shadow: 0 0 5px var(--primary-color);
-        }
-
-        .progress-container {
-            width: 80%;
-            margin: 40px auto;
-            position: relative;
-            transition: opacity 0.3s ease;
-        }
-
-        .progress-bar {
-            height: 4px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 2px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: var(--primary-color);
-            width: 0%;
-            transition: width 0.3s ease;
-            box-shadow: 0 0 10px var(--primary-color);
-        }
-
-        .console-container {
-            margin-top: 30px;
-            height: 60px;
-            overflow: hidden;
-            text-align: left;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--primary-color);
-            padding: 10px;
-            font-size: 14px;
-            position: relative;
-        }
-
-        .console-text {
-            color: var(--primary-color);
-            line-height: 1.5;
-            position: relative;
-            transition: transform 0.3s ease;
-        }
-
-        .console-line {
-            min-height: 20px;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.3s ease, transform 0.3s ease;
-        }
-
-        .console-line.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .access-granted-text {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.5em;
-            color: var(--primary-color);
-            animation: flashingText 0.5s infinite;
-            display: none;
-            text-align: center;
-        }
-
-        @keyframes flashingText {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
-        }
-
-        @keyframes logoFlash {
-            0%, 100% { 
-                opacity: 1;
-                filter: drop-shadow(0 0 30px var(--primary-color));
-            }
-            50% { 
-                opacity: 0.1;
-                filter: drop-shadow(0 0 25px var(--primary-color));
-            }
-        }
-
-        .scan-line {
-            position: absolute;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(
-                90deg,
-                transparent,
-                var(--primary-color),
-                transparent
-            );
-            opacity: 0.5;
-            animation: scan 2s linear infinite;
-        }
-
-        @keyframes scan {
-            0% { top: 0; }
-            100% { top: 100%; }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <title>Valentine's Card for Owen</title>
+  <style>
+    /* Global Styles */
+    body {
+      margin: 0;
+      padding: 0;
+      background: #f8e1e7; /* soft pastel pink background */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: 'Georgia', serif;
+    }
+    /* Card Wrapper – simulating a paper card */
+    .card-wrapper {
+      width: 600px;
+      height: 400px;
+      position: relative;
+      background: #fffaf0; /* paper-like color */
+      border: 1px solid #d3c9b4;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    /* Closed Card (Front Cover) */
+    .closed-card {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .closed-card h1 {
+      font-size: 3em;
+      color: #b22222;
+      margin-bottom: 20px;
+    }
+    .closed-card button {
+      font-size: 1.2em;
+      padding: 10px 20px;
+      border: none;
+      background: #b22222;
+      color: #fff;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .closed-card button:hover {
+      background: #8b1a1a;
+    }
+    /* Spread (each open view) */
+    .spread {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+    /* Two-page spread layout */
+    .two-page {
+      display: flex;
+      width: 100%;
+      height: 100%;
+    }
+    .page {
+      width: 50%;
+      height: 100%;
+      box-sizing: border-box;
+      padding: 20px;
+    }
+    /* Left Page */
+    .left-page {
+      border-right: 1px dashed #d3c9b4; /* crease line */
+    }
+    .left-page p {
+      font-size: 1.2em;
+      line-height: 1.4;
+      color: #333;
+      min-height: 150px;
+    }
+    .left-page button {
+      margin-top: 20px;
+      padding: 8px 15px;
+      font-size: 1em;
+      border: none;
+      border-radius: 5px;
+      background: #b22222;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .left-page button:hover {
+      background: #8b1a1a;
+    }
+    /* Right Page */
+    .right-page {
+      text-align: center;
+      color: #333;
+      position: relative;
+    }
+    .right-page img {
+      max-width: 100%;
+      max-height: 80%;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .right-page p {
+      margin-top: 15px;
+      font-size: 1.2em;
+    }
+    .nav-buttons {
+      margin-top: 20px;
+    }
+    .nav-buttons button {
+      padding: 8px 15px;
+      font-size: 1em;
+      border: none;
+      border-radius: 5px;
+      background: #b22222;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .nav-buttons button:hover {
+      background: #8b1a1a;
+    }
+    /* Final Spread (Centered Button) */
+    .final-page {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .final-page button {
+      font-size: 1.5em;
+      padding: 15px 30px;
+      border: none;
+      background: #b22222;
+      color: #fff;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .final-page button:hover {
+      background: #8b1a1a;
+    }
+    /* Valentine Overlay */
+    #valentineOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(255, 255, 255, 0.95);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+    #valentineOverlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    #valentineText {
+      font-size: 3em;
+      color: #b22222;
+      animation: pop 1s ease-out forwards;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    @keyframes pop {
+      0% { transform: scale(0); opacity: 0; }
+      70% { transform: scale(1.2); opacity: 1; }
+      100% { transform: scale(1); }
+    }
+    /* Confetti */
+    .confetti {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background-color: var(--confetti-color);
+      opacity: 0.8;
+      transform: rotate(0deg);
+      animation: confetti-fall 3s linear forwards;
+    }
+    @keyframes confetti-fall {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+    }
+  </style>
 </head>
 <body>
-    <div class="initialization-container">
-        <div class="logo-container">
-            <img src="images/surnialogo.png" alt="SURNIA Logo" class="surnia-logo">
-            <div class="accessing-text">Accessing S.U.R.N.I.A.</div>
-        </div>
-
-        <div class="progress-container">
-            <div class="progress-bar">
-                <div class="progress-fill"></div>
-            </div>
-        </div>
-
-        <div class="console-container">
-            <div class="scan-line"></div>
-            <div class="console-text">
-                <div class="console-line"></div>
-                <div class="console-line"></div>
-            </div>
-            <div class="access-granted-text">ACCESS GRANTED</div>
-        </div>
+  <div class="card-wrapper">
+    <!-- Closed Card (Front Cover) -->
+    <div class="closed-card" id="closedCard">
+      <h1>Owen mans</h1>
+      <button id="openBtn">open me ◡̈</button>
     </div>
-
-    <script>
-        class ConsoleSimulator {
-            constructor() {
-                this.consoleElement = document.querySelector('.console-text');
-                this.progressBar = document.querySelector('.progress-fill');
-                this.progressContainer = document.querySelector('.progress-container');
-                this.accessGrantedText = document.querySelector('.access-granted-text');
-                this.progress = 0;
-                this.currentLine = 0;
-                this.isTyping = false;
-                
-                this.messages = [
-                    "INITIALIZING CORE SYSTEMS...",
-                    "ESTABLISHING SECURE CONNECTION...",
-                    "VERIFYING CREDENTIALS...",
-                    "DECRYPTING PROTOCOLS...",
-                    "ACCESSING MAIN DATABASE..."
-                ];
-
-                this.init();
-            }
-
-            init() {
-                this.startProgress();
-                this.typeNextLine();
-            }
-
-            startProgress() {
-                const interval = setInterval(() => {
-                    this.progress += Math.random() * 3;
-                    if (this.progress >= 100) {
-                        this.progress = 100;
-                        clearInterval(interval);
-                        this.showAccessGranted();
-                    }
-                    this.progressBar.style.width = `${this.progress}%`;
-                }, 100);
-            }
-
-            async typeNextLine() {
-                if (this.isTyping || this.progress >= 100) return;
-                
-                const lines = document.querySelectorAll('.console-line');
-                const currentLineElement = lines[this.currentLine % 2];
-                const nextLineElement = lines[(this.currentLine + 1) % 2];
-
-                currentLineElement.textContent = '';
-                currentLineElement.classList.add('visible');
-                
-                const message = this.messages[this.currentLine % this.messages.length];
-                this.isTyping = true;
-
-                for (let i = 0; i < message.length; i++) {
-                    if (this.progress >= 100) break;
-                    currentLineElement.textContent += message[i];
-                    await this.sleep(20 + Math.random() * 30);
-                }
-
-                this.isTyping = false;
-                this.currentLine++;
-
-                if (nextLineElement) {
-                    nextLineElement.classList.remove('visible');
-                }
-
-                if (this.progress < 100) {
-                    setTimeout(() => this.typeNextLine(), 500);
-                }
-            }
-
-            showAccessGranted() {
-                this.progressContainer.style.opacity = '0';
-                this.consoleElement.style.display = 'none';
-                this.accessGrantedText.style.display = 'block';
-                
-                setTimeout(() => {
-                    window.location.href = 'main.html';
-                }, 1500);
-            }
-
-            sleep(ms) {
-                return new Promise(resolve => setTimeout(resolve, ms));
-            }
+    
+    <!-- Spread 1: German Note & Picture -->
+    <div class="spread" id="spread1">
+      <div class="two-page">
+        <!-- Left Page: German Note + Translate -->
+        <div class="page left-page">
+          <p id="message">
+            Owen, du bist der beste Freund, den ich je hatte. Deine Liebe, dein Humor und deine Unterstützung machen jeden Tag besonders. Ich schätze dich unendlich!
+          </p>
+          <button id="translateBtn">translate</button>
+        </div>
+        <!-- Right Page: Picture & Caption + Next -->
+        <div class="page right-page">
+          <img src="https://assets.onecompiler.app/438z4kps3/438z4ku8q/IMG_1591.jpeg" alt="Our Picture" style="height: 250px; width: auto">
+          <p>couldn't have done it without you, oweiner</p>
+          <div class="nav-buttons">
+            <button id="next1">Next &rarr;</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Spread 2: More Pictures with Captions -->
+    <div class="spread" id="spread2">
+      <div class="two-page">
+        <!-- Left Page: Picture & Caption -->
+        <div class="page left-page">
+          <img src="https://assets.onecompiler.app/438z4kps3/438z4ku8q/IMG_1291.jpeg" alt="Pic 1" style="height: 250px; width: auto; border-radius: 8px;">
+          <p>Your laughter is my favorite melody.</p>
+        </div>
+        <!-- Right Page: Picture & Caption + Next -->
+        <div class="page right-page">
+          <img src="https://assets.onecompiler.app/438z4kps3/438z4ku8q/IMG_1591.jpeg" alt="Pic 2" style="height: 250px; width: auto">
+          <p>Your eyes light up my world.</p>
+          <div class="nav-buttons">
+            <button id="next2">Next &rarr;</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Spread 3: Final Page with Centered Button -->
+    <div class="spread" id="spread3">
+      <div class="final-page">
+        <button id="finalBtn">hmm?</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Valentine Overlay -->
+  <div id="valentineOverlay">
+    <h1 id="valentineText">WILL YOU BE MY VALENTINE?</h1>
+  </div>
+  
+  <script>
+    // Opening the card: Hide cover and show Spread 1.
+    const openBtn = document.getElementById('openBtn');
+    const closedCard = document.getElementById('closedCard');
+    const spread1 = document.getElementById('spread1');
+    const spread2 = document.getElementById('spread2');
+    const spread3 = document.getElementById('spread3');
+    
+    openBtn.addEventListener('click', () => {
+      closedCard.style.display = 'none';
+      spread1.style.display = 'block';
+    });
+    
+    // Spread Navigation
+    const next1 = document.getElementById('next1');
+    const next2 = document.getElementById('next2');
+    
+    next1.addEventListener('click', () => {
+      spread1.style.display = 'none';
+      spread2.style.display = 'block';
+    });
+    
+    next2.addEventListener('click', () => {
+      spread2.style.display = 'none';
+      spread3.style.display = 'block';
+    });
+    
+    // Typewriter effect for translation (Spread 1 left page)
+    const translateBtn = document.getElementById('translateBtn');
+    const messageEl = document.getElementById('message');
+    const englishMessage = "Owen, you are the best boyfriend ever. Your love, your humor, and your support make every day special. I appreciate you immensely!";
+    
+    translateBtn.addEventListener('click', () => {
+      translateBtn.disabled = true; // Prevent multiple clicks
+      let i = 0;
+      messageEl.textContent = ""; // Clear the German text
+      const interval = setInterval(() => {
+        messageEl.textContent += englishMessage[i];
+        i++;
+        if (i >= englishMessage.length) {
+          clearInterval(interval);
         }
-
-        // Initialize when page loads
-        document.addEventListener('DOMContentLoaded', () => {
-            new ConsoleSimulator();
-        });
-    </script>
+      }, 50); // Delay per letter (in ms)
+    });
+    
+    // Valentine Overlay: Final Button ("hmm?") triggers the overlay.
+    const finalBtn = document.getElementById('finalBtn');
+    const valentineOverlay = document.getElementById('valentineOverlay');
+    finalBtn.addEventListener('click', () => {
+      valentineOverlay.classList.add('show');
+      spawnConfetti();
+    });
+    
+    // Function to spawn confetti pieces
+    function spawnConfetti() {
+      const colors = ["#FF0", "#FF69B4", "#BA55D3", "#7FFFD4", "#00FFFF", "#FF4500"];
+      for (let i = 0; i < 100; i++) {
+        let confetti = document.createElement("div");
+        confetti.classList.add("confetti");
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.setProperty("--confetti-color", color);
+        confetti.style.left = Math.random() * window.innerWidth + "px";
+        const duration = 2 + Math.random() * 2;
+        confetti.style.animationDuration = duration + "s";
+        const delay = Math.random() * 0.5;
+        confetti.style.animationDelay = delay + "s";
+        document.getElementById("valentineOverlay").appendChild(confetti);
+        setTimeout(() => {
+          confetti.remove();
+        }, (duration + delay) * 1000);
+      }
+    }
+  </script>
 </body>
 </html>
